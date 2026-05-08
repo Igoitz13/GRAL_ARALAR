@@ -51,10 +51,6 @@
   <div class="container">
     <h2>Metodología por triangulación</h2>
     <p class="intro">El diagnóstico se construye combinando cuatro estrategias metodológicamente independientes. Cada una responde a la misma pregunta desde un ángulo distinto, y la convergencia de signo entre ellas es el criterio operativo de robustez.</p>
-    <div class="figure">
-      <img src="figures/esquema_4_estrategias.png" alt="Las cuatro estrategias del IPP">
-      <p class="caption">Las cuatro estrategias del IPP. Cada una con su limitación específica que las demás compensan.</p>
-    </div>
     <div class="strategies">
       <div class="strategy strategy-A">
         <h3>A · GAM climático</h3>
@@ -78,8 +74,8 @@
       </div>
     </div>
     <div class="figure">
-      <img src="figures/esquema_pipeline.png" alt="Arquitectura del pipeline">
-      <p class="caption">Arquitectura completa del pipeline en cinco fases secuenciales (PROSAIL, GEE, ERA5, R, cartografía Python).</p>
+      <img src="figures/IPP_triangulacion_ABCD.png" alt="Triangulación de las cuatro estrategias del IPP">
+      <p class="caption">Triangulación cuádruple del IPP: cada estrategia cubre la limitación de las demás. La convergencia de signo es el criterio de robustez.</p>
     </div>
   </div>
 </section>
@@ -87,7 +83,7 @@
 <section id="mapas" class="alt">
   <div class="container">
     <h2>Galería de mapas pastorales</h2>
-    <p class="intro">12 productos cartográficos por año para la serie 2018-2025. Selecciona año y producto para visualizar el mapa correspondiente.</p>
+    <p class="intro">13 productos cartográficos por año para la serie 2018-2025. Selecciona año y producto para visualizar el mapa correspondiente.</p>
 
     <div class="map-controls">
       <div class="control">
@@ -111,6 +107,7 @@
           <option value="ipp_b">IPP B — Pseudo-referencia</option>
           <option value="ipp_c">IPP C — Anomalía espacial</option>
           <option value="ipp_d">IPP D — Referencia hayedo</option>
+          <option value="ipp_espacializado">IPP espacializado (píxel)</option>
           <option value="concordancia">Mapa de concordancia (k/n)</option>
           <option value="biomasa">Biomasa estimada (kg/ha)</option>
           <option value="calidad">Calidad forrajera</option>
@@ -123,11 +120,9 @@
     </div>
 
     <div class="map-display">
-      <img id="map-image" src="maps/2022/IPP_consenso_2022.png" alt="Mapa pastoral">
+      <img id="map-image" src="maps/2022/aralar_mapa_IPP_consenso_pastos_2022.png" alt="Mapa pastoral">
       <p class="caption" id="map-caption">IPP consenso integrado — 2022 (año de crisis pastoral severa, concordancia 4/4)</p>
     </div>
-
-    <p class="note">Los mapas estarán disponibles tras la ejecución completa del pipeline cartográfico. Si esta página muestra placeholders, el alumno aún no ha subido los GeoTIFFs y PNGs definitivos al repositorio.</p>
   </div>
 </section>
 
@@ -136,24 +131,24 @@
     <h2>Síntesis gráfica de resultados</h2>
     <div class="chart-grid">
       <div class="chart">
-        <img src="figures/heatmap_IPP_Aralar.png" alt="Heatmap IPP zona × año">
-        <h3>Heatmap del IPP zona × año</h3>
-        <p>Mapa de calor del IPP consenso por anillo y año. Patrón cuasi-bianual claro: 2020/2022/2025 en rojo (crisis), 2023 en verde (relajación).</p>
+        <img src="figures/evolucion_IPP_interanual.png" alt="Evolución interanual del IPP">
+        <h3>Evolución interanual del IPP</h3>
+        <p>Serie 2018-2025 del IPP consenso. Patrón cuasi-bianual: crisis en 2020, 2022 y 2025 (rojo) alternadas con la relajación de 2023 (verde).</p>
       </div>
       <div class="chart">
-        <img src="figures/Flujograma_Metodologico_v2.png" alt="Flujograma metodológico">
-        <h3>Flujograma metodológico</h3>
-        <p>Esquema integral del pipeline con todas las fases F1-F5, los datos intermedios, las correcciones aplicadas y el diagnóstico integrado final.</p>
+        <img src="figures/IPP_barras_interanual.png" alt="IPP en barras por año">
+        <h3>IPP por año (síntesis en barras)</h3>
+        <p>Resumen anual del IPP por estrategia. Permite comparar la magnitud de la presión pastoral entre años y la coherencia entre las cuatro estrategias.</p>
       </div>
       <div class="chart">
-        <img src="figures/esquema_4_estrategias.png" alt="Las 4 estrategias">
-        <h3>Esquema de las 4 estrategias</h3>
-        <p>Cada estrategia con su pregunta, fórmula y limitación. La convergencia entre estrategias es el criterio de robustez.</p>
+        <img src="figures/gradiente_IPP_distancia_bordas.png" alt="Gradiente espacial del IPP por distancia a las bordas">
+        <h3>Gradiente espacial por distancia a las bordas</h3>
+        <p>Pasto cercano > intermedio > remoto. La firma espacial es coherente con la huella ganadera y refuerza el diagnóstico al ser independiente del modelo climático.</p>
       </div>
       <div class="chart">
-        <img src="figures/esquema_pipeline.png" alt="Arquitectura pipeline">
-        <h3>Arquitectura del pipeline</h3>
-        <p>Vista compacta del pipeline en cinco fases con resultado integrado: gradiente espacial, oscilación interanual y convergencia 4/4.</p>
+        <img src="figures/diagnostico_integrado_global.png" alt="Diagnóstico integrado global">
+        <h3>Diagnóstico integrado global</h3>
+        <p>Síntesis final del diagnóstico cuádruple sobre toda la serie: convergencia entre estrategias, signo del IPP por año y nivel de fiabilidad asociado.</p>
       </div>
     </div>
   </div>
@@ -181,8 +176,8 @@
         <li><code>scripts/javascript/</code> — Pipeline GEE completo</li>
         <li><code>scripts/R/</code> — Modelización climática y diagnóstico cuádruple</li>
         <li><code>data/</code> — CSVs de salida del pipeline</li>
-        <li><code>maps/</code> — 96 mapas cartográficos (12 productos × 8 años)</li>
-        <li><code>figures/</code> — Heatmap y figuras síntesis</li>
+        <li><code>maps/</code> — Cartografía pastoral por año (serie 2018-2025, 13 productos × 8 años)</li>
+        <li><code>figures/</code> — Figuras de síntesis del diagnóstico</li>
         <li><code>docs/</code> — Documentación del proyecto (listada automáticamente en la web)</li>
       </ul>
       <a href="https://github.com/" class="btn">Ver código fuente completo →</a>
@@ -242,6 +237,7 @@ const productLabels = {
   ipp_b: 'IPP B — Pseudo-referencia',
   ipp_c: 'IPP C — Anomalía espacial',
   ipp_d: 'IPP D — Referencia hayedo',
+  ipp_espacializado: 'IPP espacializado (píxel)',
   concordancia: 'Mapa de concordancia píxel a píxel',
   biomasa: 'Biomasa estimada (kg/ha)',
   calidad: 'Calidad forrajera',
@@ -262,25 +258,26 @@ const yearTags = {
   2025: 'año de crisis moderada, concordancia 4/4'
 };
 
-const productNameMap = {
-  ipp_consenso: 'IPP_consenso',
-  ipp_a: 'IPP_A',
-  ipp_b: 'IPP_B',
-  ipp_c: 'IPP_C',
-  ipp_d: 'IPP_D',
-  concordancia: 'concordancia',
-  biomasa: 'biomasa',
-  calidad: 'calidad',
-  carga: 'carga',
-  balance: 'balance',
-  riesgo: 'riesgo',
-  pendiente: 'pendiente'
+const productFiles = {
+  ipp_consenso: y => `aralar_mapa_IPP_consenso_pastos_${y}.png`,
+  ipp_a: y => `aralar_mapa_IPP_A_pastos_${y}.png`,
+  ipp_b: y => `aralar_mapa_IPP_B_pastos_${y}.png`,
+  ipp_c: y => `aralar_mapa_IPP_C_pastos_${y}.png`,
+  ipp_d: y => `aralar_mapa_IPP_D_pastos_${y}.png`,
+  ipp_espacializado: y => `aralar_mapa_IPP_espacializado_${y}.png`,
+  concordancia: y => `aralar_mapa_IPP_concordancia_pastos_${y}.png`,
+  biomasa: y => `aralar_pastos_mapa_biomasa_${y}.png`,
+  calidad: y => `aralar_pastos_mapa_calidad_${y}.png`,
+  carga: y => `aralar_pastos_mapa_carga_${y}.png`,
+  balance: y => `aralar_pastos_mapa_balance_${y}.png`,
+  riesgo: y => `aralar_pastos_mapa_riesgo_${y}.png`,
+  pendiente: y => `aralar_pastos_mapa_pendiente_${y}.png`
 };
 
 function updateMap() {
   const year = yearSelect.value;
   const product = productSelect.value;
-  const filename = `maps/${year}/${productNameMap[product]}_${year}.png`;
+  const filename = `maps/${year}/${productFiles[product](year)}`;
   mapImage.src = filename;
   mapImage.alt = `${productLabels[product]} — ${year}`;
   mapCaption.textContent = `${productLabels[product]} — ${year} (${yearTags[year]})`;
