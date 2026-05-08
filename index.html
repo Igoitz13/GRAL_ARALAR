@@ -129,27 +129,9 @@
 <section id="graficos">
   <div class="container">
     <h2>Síntesis gráfica de resultados</h2>
-    <div class="chart-grid">
-      <div class="chart">
-        <img src="figures/evolucion_IPP_interanual.png" alt="Evolución interanual del IPP">
-        <h3>Evolución interanual del IPP</h3>
-        <p>Serie 2018-2025 del IPP consenso. Patrón cuasi-bianual: crisis en 2020, 2022 y 2025 (rojo) alternadas con la relajación de 2023 (verde).</p>
-      </div>
-      <div class="chart">
-        <img src="figures/IPP_barras_interanual.png" alt="IPP en barras por año">
-        <h3>IPP por año (síntesis en barras)</h3>
-        <p>Resumen anual del IPP por estrategia. Permite comparar la magnitud de la presión pastoral entre años y la coherencia entre las cuatro estrategias.</p>
-      </div>
-      <div class="chart">
-        <img src="figures/gradiente_IPP_distancia_bordas.png" alt="Gradiente espacial del IPP por distancia a las bordas">
-        <h3>Gradiente espacial por distancia a las bordas</h3>
-        <p>Pasto cercano > intermedio > remoto. La firma espacial es coherente con la huella ganadera y refuerza el diagnóstico al ser independiente del modelo climático.</p>
-      </div>
-      <div class="chart">
-        <img src="figures/diagnostico_integrado_global.png" alt="Diagnóstico integrado global">
-        <h3>Diagnóstico integrado global</h3>
-        <p>Síntesis final del diagnóstico cuádruple sobre toda la serie: convergencia entre estrategias, signo del IPP por año y nivel de fiabilidad asociado.</p>
-      </div>
+    <p class="intro">Galería completa generada automáticamente a partir del contenido de la carpeta <code>figures/</code> del repositorio. Cada nueva figura que se añada aparece aquí sin tocar la página.</p>
+    <div class="chart-grid" id="charts-grid">
+      <p class="docs-status" id="charts-status">Cargando figuras…</p>
     </div>
   </div>
 </section>
@@ -374,6 +356,131 @@ async function loadDocs() {
 }
 
 loadDocs();
+
+const FIGURES_PATH = 'figures';
+const FIGURES_EXCLUDE = new Set(['IPP_triangulacion_ABCD.png']);
+
+const figureMeta = {
+  'evolucion_IPP_interanual.png': {
+    title: 'Evolución interanual del IPP',
+    desc: 'Serie 2018-2025 del IPP consenso. Patrón cuasi-bianual: crisis en 2020, 2022 y 2025 alternadas con la relajación de 2023.'
+  },
+  'IPP_barras_interanual.png': {
+    title: 'IPP por año (síntesis en barras)',
+    desc: 'Resumen anual del IPP por estrategia. Permite comparar la magnitud de la presión pastoral entre años y la coherencia entre las cuatro estrategias.'
+  },
+  'IPP_por_habitat.png': {
+    title: 'IPP por hábitat',
+    desc: 'Distribución del IPP por tipo de hábitat (HIC). Identifica qué tipos de pasto soportan más presión.'
+  },
+  'gradiente_IPP_distancia_bordas.png': {
+    title: 'Gradiente espacial por distancia a las bordas',
+    desc: 'Pasto cercano > intermedio > remoto. Firma espacial coherente con la huella ganadera, independiente del modelo climático.'
+  },
+  'diag_A_pasto_cercano.png': {
+    title: 'Estrategia A · pasto cercano',
+    desc: 'Anomalías del LAI del pasto cercano a las bordas respecto al modelo climático G6.'
+  },
+  'diag_A_pasto_intermedio.png': {
+    title: 'Estrategia A · pasto intermedio',
+    desc: 'Anomalías del LAI del pasto en zona intermedia respecto al modelo climático G6.'
+  },
+  'diag_A_pasto_remoto.png': {
+    title: 'Estrategia A · pasto remoto',
+    desc: 'Pasto remoto: pseudo-referencia interna usada también en la Estrategia B.'
+  },
+  'diag_A_hayedo_cercano.png': {
+    title: 'Estrategia A · hayedo cercano',
+    desc: 'Anomalías del LAI del hayedo en zona cercana respecto al modelo climático.'
+  },
+  'diag_A_hayedo_intermedio.png': {
+    title: 'Estrategia A · hayedo intermedio',
+    desc: 'Anomalías del LAI del hayedo en zona intermedia respecto al modelo climático.'
+  },
+  'diag_A_hayedo_remoto.png': {
+    title: 'Estrategia A · hayedo remoto',
+    desc: 'Hayedo remoto: termómetro climático que vertebra la Estrategia D.'
+  },
+  'diag_C_anomalias.png': {
+    title: 'Estrategia C · anomalía espacial',
+    desc: 'Comparación píxel a píxel con la mediana del AOI en cada fecha. No requiere modelo ni referencia externa.'
+  },
+  'diagnostico_integrado_global.png': {
+    title: 'Diagnóstico integrado global',
+    desc: 'Síntesis final del diagnóstico cuádruple: convergencia entre estrategias, signo del IPP por año y nivel de fiabilidad.'
+  }
+};
+
+const FIGURE_ORDER = [
+  'evolucion_IPP_interanual.png',
+  'IPP_barras_interanual.png',
+  'IPP_por_habitat.png',
+  'gradiente_IPP_distancia_bordas.png',
+  'diag_A_pasto_cercano.png',
+  'diag_A_pasto_intermedio.png',
+  'diag_A_pasto_remoto.png',
+  'diag_A_hayedo_cercano.png',
+  'diag_A_hayedo_intermedio.png',
+  'diag_A_hayedo_remoto.png',
+  'diag_C_anomalias.png',
+  'diagnostico_integrado_global.png'
+];
+
+function prettyFigureTitle(filename) {
+  const dot = filename.lastIndexOf('.');
+  const base = dot > 0 ? filename.slice(0, dot) : filename;
+  return base.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+async function loadCharts() {
+  const grid = document.getElementById('charts-grid');
+  const status = document.getElementById('charts-status');
+  if (!grid) return;
+  try {
+    const url = `https://api.github.com/repos/${DOCS_REPO}/contents/${FIGURES_PATH}?ref=${DOCS_BRANCH}`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const items = await res.json();
+    const images = items
+      .filter(it => it.type === 'file' && /\.(png|jpe?g|gif|svg)$/i.test(it.name))
+      .filter(it => !FIGURES_EXCLUDE.has(it.name));
+
+    const orderIndex = name => {
+      const i = FIGURE_ORDER.indexOf(name);
+      return i === -1 ? Number.MAX_SAFE_INTEGER : i;
+    };
+    images.sort((a, b) => {
+      const ia = orderIndex(a.name);
+      const ib = orderIndex(b.name);
+      if (ia !== ib) return ia - ib;
+      return a.name.localeCompare(b.name, 'es');
+    });
+
+    if (images.length === 0) {
+      status.textContent = 'Aún no se han publicado figuras en la carpeta figures/.';
+      return;
+    }
+    grid.innerHTML = '';
+    for (const img of images) {
+      const meta = figureMeta[img.name] || {
+        title: prettyFigureTitle(img.name),
+        desc: img.name
+      };
+      const div = document.createElement('div');
+      div.className = 'chart';
+      div.innerHTML = `
+        <img src="${FIGURES_PATH}/${encodeURIComponent(img.name)}" alt="${meta.title}" loading="lazy">
+        <h3>${meta.title}</h3>
+        <p>${meta.desc}</p>
+      `;
+      grid.appendChild(div);
+    }
+  } catch (err) {
+    status.textContent = 'No se ha podido cargar el listado de figuras desde GitHub.';
+  }
+}
+
+loadCharts();
 </script>
 
 </body>
