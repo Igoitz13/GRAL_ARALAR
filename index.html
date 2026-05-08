@@ -22,7 +22,6 @@
       <a href="#mapas">Mapas</a>
       <a href="#graficos">Gráficos</a>
       <a href="#documentos">Documentos</a>
-      <a href="#transparencia">Transparencia</a>
       <a href="#repositorio">Repositorio</a>
     </nav>
   </div>
@@ -74,7 +73,7 @@
       </div>
       <div class="strategy strategy-D">
         <h3>D · Referencia hayedo</h3>
-        <p>El hayedo como termómetro climático. Diferencia de anomalías respecto a las fenologías propias multianuales. <em>Limitación: resiliencia diferencial pasto-hayedo (ver § Transparencia).</em></p>
+        <p>El hayedo como termómetro climático. Diferencia de anomalías respecto a las fenologías propias multianuales.</p>
         <div class="formula">IPP_D = anom_pasto − anom_hayedo</div>
       </div>
     </div>
@@ -163,63 +162,10 @@
 <section id="documentos" class="alt">
   <div class="container">
     <h2>Documentos del proyecto</h2>
-    <div class="docs-grid">
-      <a href="docs/Dossier_TFG_Aralar_v3.docx" class="doc">
-        <div class="doc-icon">📄</div>
-        <h3>Dossier técnico v3</h3>
-        <p>Documento integral de supervisión: 27 páginas con metodología completa, resultados, discusión y bibliografía exhaustiva.</p>
-        <span class="doc-format">Word · 27 páginas</span>
-      </a>
-      <a href="docs/Anexo_Didactico_TFG_Aralar_v2.docx" class="doc">
-        <div class="doc-icon">📚</div>
-        <h3>Anexo didáctico v2</h3>
-        <p>Guía de estudio: estadística asequible, las 4 estrategias con analogías, banco de 15 preguntas tipo tribunal y guion para defensa oral.</p>
-        <span class="doc-format">Word · 20 páginas</span>
-      </a>
-      <a href="docs/Explicacion_Estrategia_D.docx" class="doc">
-        <div class="doc-icon">🔬</div>
-        <h3>Estrategia D explicada</h3>
-        <p>Documento específico sobre la estrategia más original del trabajo: ejemplo numérico paso a paso con el año 2022.</p>
-        <span class="doc-format">Word · 13 páginas</span>
-      </a>
-      <a href="docs/Flujograma_Metodologico_v2.pdf" class="doc">
-        <div class="doc-icon">📊</div>
-        <h3>Flujograma metodológico</h3>
-        <p>Diagrama A3 con la arquitectura completa del pipeline y todos sus componentes.</p>
-        <span class="doc-format">PDF · 1 página A3</span>
-      </a>
+    <p class="intro">Listado generado automáticamente a partir del contenido de la carpeta <code>docs/</code> del repositorio. Cada vez que se añada un nuevo archivo aparecerá aquí sin tocar la página.</p>
+    <div class="docs-grid" id="docs-grid">
+      <p class="docs-status" id="docs-status">Cargando documentos…</p>
     </div>
-  </div>
-</section>
-
-<section id="transparencia" class="alt">
-  <div class="container">
-    <h2>Transparencia metodológica</h2>
-    <p class="intro">Durante el desarrollo del TFG se detectaron y corrigieron tres imprecisiones conceptuales que merecen documentarse abiertamente. Reconocer las limitaciones forma parte del rigor metodológico.</p>
-
-    <div class="transparency-grid">
-      <div class="transparency-item">
-        <h3>📌 Sobre el modelo G6</h3>
-        <p><strong>El modelo G6 está entrenado con la serie del LAI agregado de toda Aralar (LAI_aoi)</strong>, no con zonas de pasto remoto. Las zonas de pasto remoto se utilizan en la Estrategia B (pseudo-referencia interna), no en la A. La frase "G6 entrenado con pasto remoto como referencia sin pastoreo" que aparecía en versiones anteriores es incorrecta.</p>
-      </div>
-
-      <div class="transparency-item">
-        <h3>🌳 Resiliencia diferencial pasto-hayedo</h3>
-        <p>El hayedo no es un termómetro climático perfecto. Pasto y hayedo difieren en sistema radicular, inercia foliar, reservas de carbono y microclima del dosel. <strong>El hayedo es ecológicamente más resiliente al estrés climático que el pasto</strong>. Una parte del IPP_D negativo puede reflejar resiliencia diferencial fisiológica, no pastoreo. La defensa del método se basa en tres argumentos: (1) variabilidad interanual del IPP_D demasiado grande para fisiología constante, (2) gradiente espacial cercano > intermedio > remoto imposible de explicar fisiológicamente, (3) convergencia con A, B y C que no usan el hayedo.</p>
-      </div>
-
-      <div class="transparency-item">
-        <h3>📊 R² de la red neuronal</h3>
-        <p>Los R² altos (0.85-0.92) que aparecen en algunas referencias bibliográficas corresponden a Gaussian Process Regression (GPR), no a redes neuronales simples. Los estudios publicados con arquitectura comparable (MLP de una capa oculta tipo SNAP biophysical processor) reportan R² entre 0.55 y 0.73 en validación contra campo (Croci et al. 2022; SNAP ATBD). <strong>El R² = 0.78 obtenido en este TFG sobre la propia LUT es coherente con esa horquilla y de hecho ligeramente superior.</strong></p>
-      </div>
-
-      <div class="transparency-item">
-        <h3>🌲 LUT específica de hayedo: contribución original</h3>
-        <p>No se ha encontrado bibliografía publicada sobre inversión PROSAIL-NN con LUT específica para Fagus sylvatica. Los estudios cercanos (Kattenborn et al. 2020 sobre bosque centroeuropeo con haya, Srinet et al. 2020 sobre caducifolios tropicales) usan PROSAIL genérico o procesador SNAP. La LUT específica de hayedo de este trabajo es, hasta donde se ha verificado, una contribución original.</p>
-      </div>
-    </div>
-
-    <p class="transparency-note"><em>Para el detalle completo de cada corrección y las respuestas defendibles ante el tribunal, ver el Anexo Didáctico (sección 0) y el Dossier técnico (cap. 0).</em></p>
   </div>
 </section>
 
@@ -237,7 +183,7 @@
         <li><code>data/</code> — CSVs de salida del pipeline</li>
         <li><code>maps/</code> — 96 mapas cartográficos (12 productos × 8 años)</li>
         <li><code>figures/</code> — Heatmap y figuras síntesis</li>
-        <li><code>docs/</code> — Dossier, anexo, flujograma</li>
+        <li><code>docs/</code> — Documentación del proyecto (listada automáticamente en la web)</li>
       </ul>
       <a href="https://github.com/" class="btn">Ver código fuente completo →</a>
     </div>
@@ -350,6 +296,87 @@ document.querySelectorAll('nav a').forEach(link => {
     if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 });
+
+const DOCS_REPO = 'Moxkix/ARALAR_TFG';
+const DOCS_BRANCH = 'main';
+const DOCS_PATH = 'docs';
+
+const docIcons = {
+  pdf: '📊',
+  doc: '📄', docx: '📄',
+  xls: '📈', xlsx: '📈', csv: '📈',
+  ppt: '📽️', pptx: '📽️',
+  txt: '📝', md: '📝',
+  zip: '🗂️', rar: '🗂️', '7z': '🗂️',
+  png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️', svg: '🖼️'
+};
+
+function iconFor(ext) {
+  return docIcons[ext.toLowerCase()] || '📎';
+}
+
+function humanSize(bytes) {
+  if (!bytes && bytes !== 0) return '';
+  const units = ['B', 'KB', 'MB', 'GB'];
+  let i = 0;
+  let n = bytes;
+  while (n >= 1024 && i < units.length - 1) { n /= 1024; i++; }
+  return `${n.toFixed(n >= 10 || i === 0 ? 0 : 1)} ${units[i]}`;
+}
+
+function prettyName(filename) {
+  const dot = filename.lastIndexOf('.');
+  const base = dot > 0 ? filename.slice(0, dot) : filename;
+  return base.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function extOf(filename) {
+  const dot = filename.lastIndexOf('.');
+  return dot > 0 ? filename.slice(dot + 1) : '';
+}
+
+async function loadDocs() {
+  const grid = document.getElementById('docs-grid');
+  const status = document.getElementById('docs-status');
+  if (!grid) return;
+  try {
+    const url = `https://api.github.com/repos/${DOCS_REPO}/contents/${DOCS_PATH}?ref=${DOCS_BRANCH}`;
+    const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
+    if (res.status === 404) {
+      status.textContent = 'Aún no se han publicado documentos. Cuando se suban archivos a la carpeta docs/ del repositorio aparecerán aquí automáticamente.';
+      return;
+    }
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const items = await res.json();
+    const files = items
+      .filter(it => it.type === 'file')
+      .sort((a, b) => a.name.localeCompare(b.name, 'es'));
+    if (files.length === 0) {
+      status.textContent = 'La carpeta docs/ está vacía. Sube archivos al repositorio para que aparezcan aquí.';
+      return;
+    }
+    grid.innerHTML = '';
+    for (const f of files) {
+      const ext = extOf(f.name);
+      const a = document.createElement('a');
+      a.className = 'doc';
+      a.href = `${DOCS_PATH}/${encodeURIComponent(f.name)}`;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.innerHTML = `
+        <div class="doc-icon">${iconFor(ext)}</div>
+        <h3>${prettyName(f.name)}</h3>
+        <p>${f.name}</p>
+        <span class="doc-format">${ext.toUpperCase() || 'archivo'}${f.size ? ' · ' + humanSize(f.size) : ''}</span>
+      `;
+      grid.appendChild(a);
+    }
+  } catch (err) {
+    status.textContent = 'No se ha podido cargar el listado de documentos desde GitHub.';
+  }
+}
+
+loadDocs();
 </script>
 
 </body>
