@@ -1,0 +1,30 @@
+# PROSAIL S2 Biophysical Retrieval v3.0
+# Python 3.10-3.12, Windows/Linux/Mac
+#
+# Instalar en dos pasos:
+#   pip install --upgrade pip setuptools wheel
+#   pip install -r requirements.txt
+
+# --- Build tools (necesarios para prosail en Windows) ---
+setuptools>=68.0
+wheel>=0.41
+
+# --- Web framework ---
+fastapi>=0.104
+uvicorn[standard]>=0.24
+python-multipart>=0.0.6
+aiofiles>=23.2
+
+# --- Ciencia ---
+numpy>=1.24,<2.1
+scipy>=1.11
+pillow>=10.0
+
+# --- PROSAIL (PROSPECT-D + 4SAIL) ---
+# Requiere numba/llvmlite — si falla, instalar primero:
+#   pip install numba
+prosail>=2.0.0
+
+# --- Opcional: GeoTIFF georeferenciado ---
+# Descomentar si se necesita salida .tif con CRS:
+# rasterio>=1.3

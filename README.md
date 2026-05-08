@@ -42,7 +42,10 @@ ARALAR_TFG/
 │   ├── diagnostico_pastoral.csv
 │   ├── validacion_loyo.csv
 │   ├── comparacion_modelos.csv
-│   └── hayedo_serie_referencia.csv
+│   ├── hayedo_serie_referencia.csv
+│   └── coefficients/        LUTs PROSAIL exportadas y coeficientes NN
+│                            ({PASTOS,HAYEDO}_gee.csv y *_nn_coefficients.{js,json})
+│                            Generados por la web-app y consumidos por el script GEE.
 │
 ├── figures/                 Figuras de síntesis del trabajo
 │   ├── IPP_triangulacion_ABCD.png
@@ -61,11 +64,16 @@ ARALAR_TFG/
 │                            Variante etiquetada para LIFE Oreka Mendian
 │
 └── scripts/
-    ├── python/              Inversión PROSAIL local + entrenamiento NN + cartografía
-    │   ├── main.py
-    │   ├── prosail_pure.py
-    │   ├── train_gee_coefficients.py
-    │   └── cartografia_pastoral_v5.py
+    ├── python/
+    │   ├── web-app/         Aplicación web FastAPI para generar LUTs PROSAIL
+    │   │                    y hacer la inversión Sentinel-2 → variables biofísicas
+    │   │   ├── main.py             Backend FastAPI (REST + WebSocket)
+    │   │   ├── prosail_pure.py     Modelo PROSPECT-D + 4SAIL puro Python
+    │   │   ├── requirements.txt    Dependencias
+    │   │   ├── README.md           Guía de instalación y uso
+    │   │   └── static/index.html   Frontend SPA
+    │   ├── train_gee_coefficients.py   Entrenamiento de la NN para inyectar en GEE
+    │   └── cartografia_pastoral_v5.py  Generación de los mapas anuales
     ├── javascripts/         Pipeline en Google Earth Engine
     │   └── GEE_Pipeline_Integrado_Aralar.js
     ├── R/                   Modelización climática y diagnóstico cuádruple
@@ -73,6 +81,20 @@ ARALAR_TFG/
     └── batch/               Lanzadores Windows
         └── ejecutar_cartografia5.bat
 ```
+
+### Web-app PROSAIL (inversión Sentinel-2)
+
+La aplicación de `scripts/python/web-app/` es un servidor FastAPI con frontend incluido. Permite configurar de forma interactiva los parámetros de la LUT (rangos PROSAIL, geometría solar, distribución de muestreo, ruido), generarla en memoria con el modelo PROSPECT-D + 4SAIL real y ejecutar la inversión sobre imágenes Sentinel-2 (BEAM-DIMAP de SNAP o GeoTIFF de 10 bandas) por mínima distancia con cKDTree.
+
+```bash
+cd scripts/python/web-app
+python -m venv venv && source venv/bin/activate     # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+# Abrir http://localhost:8000
+```
+
+Los productos finales (LUTs exportadas y coeficientes de la red neuronal listos para inyectar en GEE) se versionan en `data/coefficients/`. La caché de runtime (`temp_prosail/`) está excluida del repositorio.
 
 ### Productos cartográficos por año
 
@@ -102,10 +124,17 @@ Además se genera un `aralar_resumen_<año>.txt` con los metadatos del año.
 **1. LUTs y entrenamiento de redes neuronales (Python local)**
 
 ```bash
-cd scripts/python
-python main.py                      # genera la LUT y entrena la NN
-python train_gee_coefficients.py    # exporta los coeficientes para inyectar en GEE
+# Generación de la LUT con la web-app (interfaz web en localhost:8000)
+cd scripts/python/web-app
+pip install -r requirements.txt
+python main.py
+
+# Entrenamiento de la NN sobre las LUTs exportadas y exportación de coeficientes para GEE
+cd ../
+python train_gee_coefficients.py
 ```
+
+Las LUTs exportadas y los coeficientes finales quedan en `data/coefficients/`.
 
 **2. Inversión a escala en GEE (JavaScript)**
 

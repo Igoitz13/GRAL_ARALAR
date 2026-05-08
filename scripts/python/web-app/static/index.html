@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PROSAIL S2 Biophysical Retrieval v3.0</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+:root {
+  --bg-deep: #0a0e17; --bg-panel: #111827; --bg-card: #1a2332; --bg-input: #0f1623;
+  --border: #1e2d42; --border-accent: #2563eb;
+  --text-primary: #e8edf5; --text-secondary: #8b9fc2; --text-muted: #4a5e80;
+  --accent-blue: #3b82f6; --accent-green: #10b981; --accent-amber: #f59e0b;
+  --accent-red: #ef4444; --accent-purple: #8b5cf6; --accent-cyan: #06b6d4;
+  --radius: 10px; --radius-sm: 6px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg-deep); color:var(--text-primary); min-height:100vh; }
+.header {
+  background:linear-gradient(180deg,rgba(17,24,39,.98),rgba(10,14,23,.95));
+  border-bottom:1px solid var(--border); padding:14px 28px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:100; backdrop-filter:blur(20px);
+}
+.header-brand { display:flex; align-items:center; gap:12px; }
+.header-icon { width:40px;height:40px;background:linear-gradient(135deg,#059669,#10b981,#34d399);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px; }
+.app-layout { display:grid; grid-template-columns:370px 1fr; min-height:calc(100vh - 65px); }
+.sidebar { background:var(--bg-panel); border-right:1px solid var(--border); overflow-y:auto; max-height:calc(100vh - 65px); padding:18px; }
+.main-content { padding:24px; overflow-y:auto; max-height:calc(100vh - 65px); }
+.section { background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius); padding:18px; margin-bottom:16px; }
+.section h3 { font-size:12px; font-weight:600; letter-spacing:.3px; text-transform:uppercase; color:var(--text-secondary); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+.form-group { margin-bottom:12px; }
+.form-label { display:block; font-size:10.5px; color:var(--text-muted); font-family:'JetBrains Mono',monospace; margin-bottom:5px; text-transform:uppercase; }
+.form-input,.form-select { width:100%; background:var(--bg-input); border:1px solid var(--border); border-radius:var(--radius-sm); padding:7px 10px; color:var(--text-primary); font-family:'JetBrains Mono',monospace; font-size:12px; }
+.form-input:focus,.form-select:focus { outline:none; border-color:var(--accent-blue); }
+.param-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.btn-primary { width:100%; padding:11px; background:var(--accent-blue); color:white; border:none; border-radius:var(--radius); font-weight:600; cursor:pointer; transition:all .2s; font-size:13px; }
+.btn-primary:hover:not(:disabled) { background:#2563eb; transform:translateY(-1px); }
+.btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+.btn-primary.running { background:var(--accent-amber); animation:pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+.btn-upload { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; background:var(--bg-input); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-primary); cursor:pointer; font-size:12px; transition:all .2s; font-family:'DM Sans',sans-serif; }
+.btn-upload:hover { border-color:var(--accent-blue); background:rgba(59,130,246,.08); }
+.upload-zone { border:2px dashed var(--border); border-radius:var(--radius); padding:20px; text-align:center; background:var(--bg-input); transition:all .3s; }
+.upload-zone.has-file { border-color:var(--accent-green); border-style:solid; }
+.console-log { background:var(--bg-input); border:1px solid var(--border); border-radius:var(--radius-sm); margin-top:12px; max-height:180px; overflow-y:auto; font-family:'JetBrains Mono',monospace; font-size:10.5px; line-height:1.6; padding:10px; }
+.log-line { color:var(--text-muted); margin-bottom:3px; }
+.log-info { color:var(--accent-blue); } .log-success { color:var(--accent-green); }
+.log-error { color:var(--accent-red); } .log-warn { color:var(--accent-amber); }
+.results-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:18px; }
+.result-card { background:var(--bg-panel); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; }
+.result-header { padding:14px 16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.result-title { font-weight:600; display:flex; align-items:center; gap:8px; }
+.badge { padding:2px 8px; border-radius:4px; font-size:11px; font-family:'JetBrains Mono',monospace; }
+.badge-lai { background:rgba(16,185,129,.2); color:#34d399; }
+.badge-cab { background:rgba(245,158,11,.2); color:#fbbf24; }
+.badge-cw { background:rgba(139,92,246,.2); color:#a78bfa; }
+.badge-ccc { background:rgba(6,182,212,.2); color:#22d3ee; }
+.badge-unc { background:rgba(239,68,68,.2); color:#f87171; }
+.result-canvas { width:100%; height:320px; background:#000; image-rendering:pixelated; display:block; }
+.result-stats { padding:10px 16px; font-size:11px; color:var(--text-muted); font-family:'JetBrains Mono',monospace; display:flex; gap:14px; flex-wrap:wrap; }
+.result-stats span { color:var(--text-primary); }
+.progress-container { margin-top:10px; display:none; }
+.progress-container.active { display:block; }
+.progress-bar-bg { height:5px; background:var(--bg-input); border-radius:3px; overflow:hidden; }
+.progress-bar-fill { height:100%; background:linear-gradient(90deg,var(--accent-blue),var(--accent-cyan)); transition:width .3s; border-radius:3px; }
+.progress-text { font-size:10.5px; color:var(--text-muted); margin-top:5px; font-family:'JetBrains Mono',monospace; }
+.hidden { display:none !important; }
+.conn-status { font-size:11px; font-family:'JetBrains Mono',monospace; }
+.conn-ok { color:var(--accent-green); }
+.conn-err { color:var(--accent-red); }
+
+/* Tooltips */
+.tip { position:relative; cursor:help; }
+.tip::after {
+  content: attr(data-tip);
+  position:absolute; left:50%; bottom:calc(100% + 8px); transform:translateX(-50%);
+  background:#1e293b; color:#e2e8f0; border:1px solid #334155; border-radius:6px;
+  padding:8px 11px; font-size:11px; font-family:'DM Sans',sans-serif; font-weight:400;
+  line-height:1.45; white-space:normal; width:260px; text-transform:none; letter-spacing:0;
+  pointer-events:none; opacity:0; transition:opacity .2s; z-index:999;
+  box-shadow:0 4px 16px rgba(0,0,0,.35);
+}
+.tip:hover::after { opacity:1; }
+.tip-icon { display:inline-flex; align-items:center; justify-content:center;
+  width:14px; height:14px; border-radius:50%; background:rgba(59,130,246,.15);
+  color:var(--accent-blue); font-size:9px; font-weight:700; font-style:normal;
+  margin-left:4px; vertical-align:middle; flex-shrink:0; }
+.form-label .tip-icon { font-family:'DM Sans',sans-serif; }
+
+/* Presets */
+.preset-bar { display:flex; gap:4px; flex-wrap:wrap; margin-bottom:10px; }
+.preset-chip {
+  padding:4px 9px; font-size:10px; font-family:'JetBrains Mono',monospace;
+  background:var(--bg-input); border:1px solid var(--border); border-radius:12px;
+  color:var(--text-muted); cursor:pointer; transition:all .2s; white-space:nowrap;
+}
+.preset-chip:hover { border-color:var(--accent-blue); color:var(--accent-blue); background:rgba(59,130,246,.08); }
+.preset-chip.active { border-color:var(--accent-green); color:var(--accent-green); background:rgba(16,185,129,.1); }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand">
+    <div class="header-icon">🌿</div>
+    <div>
+      <h1 style="font-size:18px;font-weight:700">PROSAIL <span style="color:var(--accent-green)">S2</span> Inversion</h1>
+      <div style="font-size:10.5px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">
+        BIOPHYSICAL RETRIEVAL · PYTHON PROSAIL BACKEND
+      </div>
+    </div>
+  </div>
+  <div id="connStatus" class="conn-status conn-err">🔴 Desconectado</div>
+</header>
+
+<div class="app-layout">
+<aside class="sidebar">
+
+  <!-- 1. LUT CONFIG -->
+  <div class="section">
+    <h3>⚙️ Configuración LUT</h3>
+    <div class="form-group">
+      <label class="form-label tip" data-tip="Número de simulaciones PROSAIL en la tabla. Más muestras = mayor precisión pero más tiempo de generación. 50K es un buen balance; 100K+ recomendado para imágenes grandes.">Tamaño LUT <span class="tip-icon">?</span></label>
+      <select class="form-select" id="lutSize">
+        <option value="10000">10,000 (rápido, ~30s)</option>
+        <option value="50000" selected>50,000 (estándar, ~2.5 min)</option>
+        <option value="100000">100,000 (preciso, ~5 min)</option>
+        <option value="200000">200,000 (máximo, ~10 min)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label tip" data-tip="SNAP (8 bandas) excluye B2 (blue, ruidosa por aerosoles residuales) y B8 (NIR broad, redundante con B8A). Recomendado por Weiss & Baret (2016). Usar 10 solo si la imagen incluye B2 y B8.">Bandas <span class="tip-icon">?</span></label>
+      <select class="form-select" id="bandSelection">
+        <option value="snap8" selected>8 bandas SNAP (B3-B12, sin B2/B8)</option>
+        <option value="all10">10 bandas (todas)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label tip" data-tip="Baret (2007): gaussiana truncada, concentra muestras en rangos vegetativos realistas. Usada por SNAP y ARTMO. Uniforme: igual probabilidad en todo el rango, útil si hay cubiertas extremas.">Distribución muestreo <span class="tip-icon">?</span></label>
+      <select class="form-select" id="distribution">
+        <option value="baret" selected>Baret et al. (2007) — Gaussiana truncada</option>
+        <option value="uniform">Uniforme</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label tip" data-tip="Ruido gaussiano añadido a cada espectro de la LUT. Simula errores instrumentales + atmosféricos. Efecto regularizador: evita que el kNN sobreajuste a diferencias espectrales mínimas. 0.01 es el estándar de ARTMO.">Ruido σ (regularización) <span class="tip-icon">?</span></label>
+      <select class="form-select" id="noiseSigma">
+        <option value="0">0 (sin ruido)</option>
+        <option value="0.005">0.005 (bajo)</option>
+        <option value="0.01" selected>0.01 (ARTMO estándar)</option>
+        <option value="0.02">0.02 (alto)</option>
+        <option value="0.03">0.03 (muy alto)</option>
+      </select>
+    </div>
+    <button class="btn-primary" id="btnLUT" onclick="generateLUT()">① Generar LUT (Python PROSAIL)</button>
+    <div class="progress-container" id="lutProg">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="lutProgBar" style="width:0%"></div></div>
+      <div class="progress-text" id="lutProgText">Generando...</div>
+    </div>
+    <div id="lutInfo" style="margin-top:8px;font-size:11px;color:var(--text-secondary);display:none">✅ LUT lista</div>
+  </div>
+
+  <!-- 2. PRESETS + PROSAIL PARAMS -->
+  <div class="section">
+    <h3>🍃 Parámetros PROSAIL</h3>
+
+    <!-- PRESETS -->
+    <div style="margin-bottom:14px">
+      <label class="form-label tip" data-tip="Presets de parámetros optimizados para distintos tipos de cubierta. Ajustan rangos de LAI, ALA, Cab, Cw y suelo según valores bibliográficos típicos. El preset 'General' usa los valores Baret (2007).">Presets por cubierta <span class="tip-icon">?</span></label>
+      <select class="form-select" id="presetSelect" onchange="applyPreset(this.value)" style="margin-top:4px">
+        <optgroup label="🏔️ Aralar (TFG — ZEC ES2120011)">
+          <option value="aralar_pastos">Aralar — Pastos pastorales</option>
+          <option value="aralar_hayedo">Aralar — Hayedo (Fagus sylvatica)</option>
+        </optgroup>
+        <optgroup label="🌍 General">
+          <option value="general" selected>General — Baret et al. (2007)</option>
+          <option value="snap_default">SNAP Biophysical Processor</option>
+        </optgroup>
+        <optgroup label="🌾 Cultivos herbáceos">
+          <option value="cereales">Cereales (trigo, cebada, avena)</option>
+          <option value="maiz">Maíz</option>
+          <option value="arroz">Arroz</option>
+          <option value="colza">Colza / Girasol</option>
+          <option value="horticola">Hortícolas (huerta, regadío)</option>
+          <option value="alfalfa">Alfalfa / Praderas</option>
+        </optgroup>
+        <optgroup label="🌳 Leñosos">
+          <option value="vinedo">Viñedo</option>
+          <option value="olivar">Olivar</option>
+          <option value="frutal">Frutales</option>
+          <option value="bosque_cad">Bosque caducifolio</option>
+          <option value="bosque_per">Bosque perennifolio / Coníferas</option>
+          <option value="dehesa">Dehesa</option>
+        </optgroup>
+        <optgroup label="🌿 Vegetación natural">
+          <option value="matorral">Matorral mediterráneo</option>
+          <option value="pradera_nat">Pradera / Pastizal natural</option>
+          <option value="humedal">Humedal / Ribera</option>
+        </optgroup>
+        <optgroup label="🏜️ Escasa vegetación">
+          <option value="suelo_desnudo">Suelo desnudo / Barbecho</option>
+          <option value="estepario">Estepario / Árido</option>
+        </optgroup>
+      </select>
+    </div>
+
+    <!-- PARAMETER GRID -->
+    <div class="param-grid">
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Número de capas foliares (PROSPECT-D). Controla el scattering interno. Hojas tiernas/jóvenes ≈ 1.2, hojas maduras ≈ 1.5, hojas gruesas/senescentes ≈ 2.0–3.0.">N (estructura) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="N_min" value="1.0" step="0.1"><input type="number" class="form-input" id="N_max" value="3.0" step="0.1"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Contenido de clorofila a+b en µg/cm². Determina la absorción en el rojo. Vegetación vigorosa: 40–80, senescente: 5–20, estrés hídrico: 20–40.">Cab (µg/cm²) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="Cab_min" value="1" step="1"><input type="number" class="form-input" id="Cab_max" value="90" step="1"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Contenido de carotenoides en µg/cm². Pigmentos accesorios (fotoprotección). Típicamente 1/4–1/3 de Cab. Afecta sobre todo al azul y verde.">Car (µg/cm²) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="Car_min" value="0" step="1"><input type="number" class="form-input" id="Car_max" value="25" step="1"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Pigmentos marrones (unidades arbitrarias). Indica senescencia/necrosis foliar. Verde sano: 0, senescente: 0.5–1.5, hojarasca: >1.5.">Cbrown <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="Cbrown_min" value="0" step="0.1"><input type="number" class="form-input" id="Cbrown_max" value="2.0" step="0.1"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Espesor equivalente de agua foliar en cm. Controla la absorción en SWIR. Hojas suculentas: 0.02–0.04, gramíneas: 0.005–0.015, estrés: <0.005.">Cw (cm) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="Cw_min" value="0.002" step="0.001"><input type="number" class="form-input" id="Cw_max" value="0.05" step="0.001"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Contenido de materia seca foliar en g/cm². Afecta al SWIR. Hojas finas: 0.002–0.006, hojas gruesas/coriáceas: 0.010–0.025.">Cm (g/cm²) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="Cm_min" value="0.001" step="0.001"><input type="number" class="form-input" id="Cm_max" value="0.025" step="0.001"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Leaf Area Index — área foliar por área de suelo (m²/m²). Variable objetivo principal. Suelo desnudo: 0, pradera: 1–3, cultivos: 2–6, bosque denso: 5–10.">LAI (m²/m²) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="LAI_min" value="0.0" step="0.1"><input type="number" class="form-input" id="LAI_max" value="15.0" step="0.5"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Average Leaf Angle — ángulo medio de inclinación foliar (°). Planófilo (horizontal) ≈ 20–40°, esférico ≈ 55°, erectófilo (vertical) ≈ 65–80°. Maíz/cereales ≈ 65–75°, remolacha ≈ 30°.">ALA (°) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="ALA_min" value="20" step="5"><input type="number" class="form-input" id="ALA_max" value="80" step="5"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Parámetro de hotspot = tamaño hoja / altura dosel. Controla el pico de reflectancia en la dirección retrosolar. Cultivos bajos: 0.05–0.2, árboles: 0.01–0.05.">Hotspot <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="hot_min" value="0.01" step="0.01"><input type="number" class="form-input" id="hot_max" value="0.50" step="0.01"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Factor de humedad del suelo de fondo. 0 = suelo mojado (más oscuro en SWIR), 1 = suelo seco. Mezcla lineal de dos espectros de suelo estándar.">psoil (humedad) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="psoil_min" value="0.0" step="0.1"><input type="number" class="form-input" id="psoil_max" value="1.0" step="0.1"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Factor de brillo del suelo. Multiplica el espectro de suelo estándar. Suelos orgánicos oscuros: 0.3–0.6, francos: 0.8–1.2, calizos/arenosos claros: 1.5–3.0.">rsoil (brillo) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="rsoil_min" value="0.2" step="0.1"><input type="number" class="form-input" id="rsoil_max" value="3.5" step="0.1"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. GEOMETRY -->
+  <div class="section">
+    <h3>☀️ Geometría Sol-Sensor</h3>
+
+    <!-- Calculator -->
+    <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-bottom:12px">
+      <div onclick="document.getElementById('gcBody').classList.toggle('hidden');this.querySelector('.gc-arr').textContent=document.getElementById('gcBody').classList.contains('hidden')?'▸':'▾'"
+           style="cursor:pointer;font-size:11px;color:var(--accent-blue);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:5px;user-select:none">
+        <span class="gc-arr">▸</span> 🛰️ Calcular desde fecha, sensor y latitud
+      </div>
+      <div id="gcBody" class="hidden" style="margin-top:10px">
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:6px 10px;align-items:center;font-size:11px;color:var(--text-muted)">
+          <label>Fecha:</label>
+          <input type="date" id="gc_date" value="2026-06-21" class="form-input" style="padding:4px 8px;font-size:11px;color-scheme:dark">
+          <label>Latitud (°):</label>
+          <input type="number" id="gc_lat" value="43.0" min="-66" max="66" step="0.1" class="form-input" style="padding:4px 8px;font-size:11px">
+          <label>Sensor:</label>
+          <select id="gc_sat" class="form-select" style="padding:4px 8px;font-size:11px">
+            <option value="S2">Sentinel-2 (10:30h, 786 km)</option>
+            <option value="L9">Landsat 8/9 (10:00h, 705 km)</option>
+          </select>
+          <label>Pos. barrido:</label>
+          <div style="display:flex;align-items:center;gap:6px">
+            <input type="range" id="gc_swath" min="-1" max="1" step="0.1" value="0" style="flex:1;height:4px;accent-color:var(--accent-blue)"
+                   oninput="document.getElementById('gc_swlbl').textContent=this.value==0?'nadir':this.value<0?'W '+Math.abs(this.value*100).toFixed(0)+'%':'E '+(this.value*100).toFixed(0)+'%'">
+            <span id="gc_swlbl" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent-cyan);min-width:50px;text-align:center">nadir</span>
+          </div>
+        </div>
+        <button onclick="calcGeom()" style="margin-top:8px;width:100%;padding:7px;background:rgba(59,130,246,.12);border:1px solid var(--accent-blue);color:var(--accent-blue);border-radius:var(--radius-sm);cursor:pointer;font-size:11.5px;font-weight:500;transition:all .2s"
+                onmouseover="this.style.background='rgba(59,130,246,.25)'" onmouseout="this.style.background='rgba(59,130,246,.12)'">
+          📐 Calcular y aplicar geometría
+        </button>
+        <div id="gc_out" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent-cyan);margin-top:6px;padding:6px 8px;background:rgba(6,182,212,.06);border-radius:var(--radius-sm);display:none;line-height:1.6;border:1px solid rgba(6,182,212,.15)"></div>
+      </div>
+    </div>
+
+    <!-- Mode toggle: Fija vs Muestreada -->
+    <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px">
+      <label class="form-label tip" data-tip="Fija: una sola geometría sol-sensor para toda la LUT (modo clásico, válido sólo para escenas con la misma geometría que la de referencia). Muestreada: cada entrada de la LUT se simula con una geometría aleatoria dentro del rango especificado (LHS uniforme), permitiendo que una única red neuronal generalice a escenas con geometrías distintas dentro del rango. Recomendado para series multitemporales como Aralar.">Modo de geometría <span class="tip-icon">?</span></label>
+      <div style="display:flex;gap:14px;margin-top:6px;font-size:12px">
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--text-primary)">
+          <input type="radio" name="geomMode" value="fixed" onchange="toggleGeomMode()"> Fija
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;color:var(--text-primary)">
+          <input type="radio" name="geomMode" value="sampled" checked onchange="toggleGeomMode()"> Muestreada (rangos)
+        </label>
+      </div>
+    </div>
+
+    <!-- Manual inputs — modo FIJA -->
+    <div id="geomFixedBlock" class="hidden">
+      <div class="param-grid">
+        <div class="form-group"><label class="form-label tip" data-tip="Sun Zenith Angle — ángulo cenital solar. 0° = sol en vertical (trópicos mediodía). En lat 43° verano ≈ 25–35°, invierno ≈ 60–70°. Afecta a la iluminación y sombras del dosel.">SZA — θ<sub>s</sub> (°) <span class="tip-icon">?</span></label><input type="number" class="form-input" id="sza" value="30" step="0.1" min="0" max="80"></div>
+        <div class="form-group"><label class="form-label tip" data-tip="View Zenith Angle — ángulo cenital de observación. 0° = nadir (vertical). S2 en nadir ≈ 0°, en borde de pasada ≈ 10–12°. Afecta al hotspot y BRDF.">VZA — θ<sub>o</sub> (°) <span class="tip-icon">?</span></label><input type="number" class="form-input" id="vza" value="0" step="0.1" min="0" max="80"></div>
+      </div>
+      <div class="form-group"><label class="form-label tip" data-tip="Relative Azimuth Angle — diferencia entre azimut solar y azimut de observación. 0° = forward scattering, 180° = backscattering (hotspot). Para S2 en órbita descendente, depende del ángulo de la pasada.">RAA — φ (°) <span class="tip-icon">?</span></label><input type="number" class="form-input" id="raa" value="0" step="0.1" min="0" max="180"></div>
+    </div>
+
+    <!-- Manual inputs — modo MUESTREADA -->
+    <div id="geomSampledBlock">
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">
+        <button type="button" class="preset-chip" onclick="applyGeomPreset('aralar')" style="cursor:pointer">🏔️ Aralar abr–oct</button>
+        <button type="button" class="preset-chip" onclick="applyGeomPreset('aralar_full')" style="cursor:pointer">🏔️ Aralar año completo</button>
+        <button type="button" class="preset-chip" onclick="applyGeomPreset('s2_global')" style="cursor:pointer">🌍 S2 global</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Rango de SZA muestreado (LHS uniforme). Para Sentinel-2 al paso de Aralar (43°N, ~11:00 hora solar) en abril–octubre: 20°–60°. Para año completo en latitud media: 20°–75°.">SZA — θ<sub>s</sub> rango (°) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="sza_min" value="20" step="0.5" min="0" max="80"><input type="number" class="form-input" id="sza_max" value="60" step="0.5" min="0" max="80"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Rango de VZA muestreado (LHS uniforme). Sentinel-2 tiene un swath estrecho con VZA máximo ≈ 10–12°. Use 0–12° en todos los casos S2.">VZA — θ<sub>o</sub> rango (°) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="vza_min" value="0" step="0.5" min="0" max="80"><input type="number" class="form-input" id="vza_max" value="12" step="0.5" min="0" max="80"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label tip" data-tip="Rango de RAA muestreado (LHS uniforme). Cubre todo el rango de configuraciones sol-sensor azimutales posibles. Use 0–180° por defecto.">RAA — φ rango (°) <span class="tip-icon">?</span></label>
+        <div style="display:flex;gap:4px"><input type="number" class="form-input" id="raa_min" value="0" step="1" min="0" max="180"><input type="number" class="form-input" id="raa_max" value="180" step="1" min="0" max="180"></div>
+      </div>
+    </div>
+
+    <!-- Metadata XML upload -->
+    <div style="background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;margin-top:10px">
+      <div onclick="document.getElementById('xmlBody').classList.toggle('hidden');this.querySelector('.xml-arr').textContent=document.getElementById('xmlBody').classList.contains('hidden')?'▸':'▾'"
+           style="cursor:pointer;font-size:11px;color:var(--accent-green);font-family:'JetBrains Mono',monospace;display:flex;align-items:center;gap:5px;user-select:none">
+        <span class="xml-arr">▾</span> 📄 Extraer desde metadatos S2 (MTD_TL.xml)
+      </div>
+      <div id="xmlBody" style="margin-top:10px">
+        <div style="font-size:10px;color:var(--text-muted);margin-bottom:8px;line-height:1.5">
+          Sube el fichero <strong>MTD_TL.xml</strong> del granule S2
+          (<code>.SAFE/GRANULE/L2A_T30TXN_.../MTD_TL.xml</code>).<br>
+          Se extraen SZA, VZA y RAA directamente de los ángulos medios del metadato.
+        </div>
+        <div id="xmlDropZone"
+             style="border:2px dashed var(--border);border-radius:var(--radius-sm);padding:20px 12px;text-align:center;cursor:pointer;transition:all .2s"
+             ondragover="event.preventDefault();this.style.borderColor='var(--accent-green)';this.style.background='rgba(16,185,129,.06)'"
+             ondragleave="this.style.borderColor='var(--border)';this.style.background='transparent'"
+             ondrop="event.preventDefault();this.style.borderColor='var(--border)';this.style.background='transparent';uploadMetadataXML(event.dataTransfer.files[0])"
+             onclick="document.getElementById('xmlFileInput').click()">
+          <div style="font-size:20px;margin-bottom:4px">📄</div>
+          <div style="font-size:11px;color:var(--text-muted)">Arrastra <strong>MTD_TL.xml</strong> aquí o haz clic</div>
+          <input type="file" id="xmlFileInput" accept=".xml" style="display:none"
+                 onchange="if(this.files[0]) uploadMetadataXML(this.files[0])">
+        </div>
+        <div id="xml_out" style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent-green);margin-top:6px;padding:6px 8px;background:rgba(16,185,129,.06);border-radius:var(--radius-sm);display:none;line-height:1.6;border:1px solid rgba(16,185,129,.15)"></div>
+      </div>
+    </div>
+
+    <div style="font-size:10px;color:var(--text-muted);margin-top:4px;font-style:italic">
+      SZA = Sun Zenith Angle · VZA = View Zenith Angle · RAA = Relative Azimuth Angle
+    </div>
+  </div>
+
+  <!-- 4. IMAGE INPUT -->
+  <div class="section">
+    <h3>🛰️ Imagen de Entrada</h3>
+    <div class="upload-zone" id="uploadZone">
+      <div style="font-size:28px;margin-bottom:6px">📡</div>
+      <div style="font-weight:500;font-size:13px;margin-bottom:4px">Cargar imagen Sentinel-2</div>
+      <div style="font-size:10.5px;color:var(--text-muted);margin-bottom:12px">BEAM-DIMAP (.dim + .data/) o GeoTIFF (.tif)</div>
+
+      <!-- DIMAP two-step -->
+      <div style="padding-top:10px;border-top:1px solid var(--border)">
+        <div style="font-size:10px;color:var(--accent-blue);font-family:'JetBrains Mono',monospace;margin-bottom:8px;text-align:left">BEAM-DIMAP (SNAP)</div>
+        <div style="display:flex;gap:6px;justify-content:center">
+          <label class="btn-upload" id="btnDim">
+            <input type="file" id="dimInput" accept=".dim" style="display:none" onchange="handleDimFile(event)">
+            ① Archivo .dim
+          </label>
+          <label class="btn-upload" id="btnData" style="opacity:.4;pointer-events:none">
+            <input type="file" id="dataInput" webkitdirectory style="display:none" onchange="handleDataFolder(event)">
+            ② Carpeta .data
+          </label>
+        </div>
+        <div id="dimapStatus" style="font-size:10px;color:var(--text-muted);margin-top:6px;font-family:'JetBrains Mono',monospace;text-align:center"></div>
+      </div>
+
+      <!-- GeoTIFF -->
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <div style="font-size:10px;color:var(--accent-green);font-family:'JetBrains Mono',monospace;margin-bottom:8px;text-align:left">GEOTIFF STACK</div>
+        <label class="btn-upload"><input type="file" id="tifInput" accept=".tif,.tiff" style="display:none" onchange="handleTifFile(event)">🗺️ Cargar .tif multi-banda</label>
+      </div>
+    </div>
+
+    <div id="fileInfo" style="margin-top:10px;font-size:11px;display:none">
+      <div style="color:var(--accent-green);font-weight:500" id="fileName"></div>
+      <div style="color:var(--text-muted)" id="fileDims"></div>
+    </div>
+
+    <div class="form-group" style="margin-top:10px">
+      <label class="form-label tip" data-tip="Número de vecinos más cercanos (kNN) en el espacio espectral de la LUT. La estimación se promedia ponderada por inversa de distancia. k=10–20: menos suavizado, k=30–50: más robusto. Valores altos reducen ruido pero pueden sesgar en zonas de transición.">K mejores matches <span class="tip-icon">?</span></label>
+      <input type="number" class="form-input" id="kBest" value="30" min="5" max="200">
+    </div>
+
+    <button class="btn-primary" id="btnRun" onclick="runInversion()" disabled style="margin-top:10px">
+      ② Ejecutar Inversión
+    </button>
+    <div class="progress-container" id="invProg">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" id="invProgBar" style="width:0%"></div></div>
+      <div class="progress-text" id="invProgText">Procesando...</div>
+    </div>
+  </div>
+
+  <!-- CONSOLE -->
+  <div class="console-log" id="logBox">
+    <div class="log-line log-info">→ PROSAIL S2 Inversion Client v3.0</div>
+    <div class="log-line log-info">  Modelo: PROSPECT-D + 4SAIL (Baret 2007 + ALA + suelo variable)</div>
+    <div class="log-line">→ Backend: Python PROSAIL (PROSPECT-D + 4SAIL)</div>
+  </div>
+
+</aside>
+
+<main class="main-content">
+  <div id="welcomeScreen" style="text-align:center;padding-top:18%;color:var(--text-muted)">
+    <div style="font-size:52px;margin-bottom:14px">🌍</div>
+    <h2 style="color:var(--text-primary);margin-bottom:8px">Sistema Listo</h2>
+    <p style="line-height:1.8">
+      1. Genera una LUT con los parámetros deseados (modelo Python PROSAIL)<br>
+      2. Carga una imagen Sentinel-2 (DIMAP o GeoTIFF)<br>
+      3. Ejecuta la inversión y descarga los resultados
+    </p>
+  </div>
+
+  <div id="resultsContainer" class="hidden">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <h2 style="font-size:18px">📊 Resultados</h2>
+      <div style="display:flex;gap:8px">
+        <button onclick="downloadAll()" style="padding:7px 14px;background:var(--bg-card);border:1px solid var(--border);color:var(--text-primary);border-radius:var(--radius-sm);cursor:pointer;font-size:12px">
+          📥 Descargar GeoTIFFs
+        </button>
+        <span id="formatBadge" style="font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--accent-green);padding:4px 8px;background:rgba(16,185,129,.1);border-radius:4px"></span>
+      </div>
+    </div>
+    <div class="results-grid" id="resultsGrid"></div>
+  </div>
+</main>
+</div>
+
+<script>
+// ============================================================
+//  CONFIG
+// ============================================================
+const API_URL = window.location.origin;  // Same-origin (served by FastAPI)
+let currentLutId = null;
+let currentJobId = null;
+
+// File storage for upload
+const uploadState = {
+  format: null,     // 'dimap' | 'geotiff'
+  dimFile: null,     // File object for .dim
+  dimMeta: null,     // Parsed .dim metadata
+  s2Files: [],       // Array of {band, imgFile, hdrFile} for DIMAP
+  tifFile: null,     // File object for GeoTIFF
+};
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  checkConnection();
+  toggleGeomMode();
+});
+
+async function checkConnection() {
+  try {
+    const res = await fetch(`${API_URL}/api/health`);
+    if (res.ok) {
+      const data = await res.json();
+      document.getElementById('connStatus').innerHTML = '<span class="conn-ok">🟢 Conectado</span>';
+      log('success', `Conectado: ${data.model}`);
+    }
+  } catch(e) {
+    log('error', 'No se puede conectar al backend. ¿Está corriendo? → python main.py');
+  }
+}
+
+// ============================================================
+//  LOGGING
+// ============================================================
+function log(type, msg) {
+  const box = document.getElementById('logBox');
+  const line = document.createElement('div');
+  line.className = `log-line log-${type}`;
+  const t = new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  line.textContent = `[${t}] ${msg}`;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
+}
+
+// ============================================================
+//  1. LUT GENERATION (calls Python backend)
+// ============================================================
+async function generateLUT() {
+  const btn = document.getElementById('btnLUT');
+  const prog = document.getElementById('lutProg');
+  const bar = document.getElementById('lutProgBar');
+  const txt = document.getElementById('lutProgText');
+
+  btn.disabled = true;
+  btn.textContent = 'Generando LUT en Python...';
+  prog.classList.add('active');
+  bar.style.width = '30%';
+  txt.textContent = 'Ejecutando PROSAIL en servidor...';
+
+  const ranges = {
+    N:      [pf('N_min'), pf('N_max')],
+    Cab:    [pf('Cab_min'), pf('Cab_max')],
+    Car:    [pf('Car_min'), pf('Car_max')],
+    Cbrown: [pf('Cbrown_min'), pf('Cbrown_max')],
+    Cw:     [pf('Cw_min'), pf('Cw_max')],
+    Cm:     [pf('Cm_min'), pf('Cm_max')],
+    LAI:    [pf('LAI_min'), pf('LAI_max')],
+    ALA:    [pf('ALA_min'), pf('ALA_max')],
+    hot:    [pf('hot_min'), pf('hot_max')],
+    psoil:  [pf('psoil_min'), pf('psoil_max')],
+    rsoil:  [pf('rsoil_min'), pf('rsoil_max')]
+  };
+  const geomMode = (document.querySelector('input[name="geomMode"]:checked') || {}).value || 'sampled';
+  let geometry;
+  if (geomMode === 'sampled') {
+    geometry = {
+      tts: [pf('sza_min'), pf('sza_max')],
+      tto: [pf('vza_min'), pf('vza_max')],
+      psi: [pf('raa_min'), pf('raa_max')]
+    };
+  } else {
+    geometry = { tts: pf('sza'), tto: pf('vza'), psi: pf('raa') };
+  }
+  const n_samples = parseInt(document.getElementById('lutSize').value);
+  const noise_sigma = parseFloat(document.getElementById('noiseSigma').value);
+  const distribution = document.getElementById('distribution').value;
+  const band_selection = document.getElementById('bandSelection').value;
+
+  log('info', `Generando LUT: ${n_samples.toLocaleString()} muestras, ${band_selection}, dist=${distribution}, σ=${noise_sigma}`);
+  if (geomMode === 'sampled') {
+    log('info', `Geometría muestreada: SZA[${geometry.tts[0]}–${geometry.tts[1]}°] VZA[${geometry.tto[0]}–${geometry.tto[1]}°] RAA[${geometry.psi[0]}–${geometry.psi[1]}°]`);
+  } else {
+    log('info', `Geometría fija: SZA=${geometry.tts}° VZA=${geometry.tto}° RAA=${geometry.psi}°`);
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/lut/generate`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ n_samples, ranges, geometry, noise_sigma, distribution, band_selection })
+    });
+    const data = await res.json();
+    if (data.lut_id) {
+      currentLutId = data.lut_id;
+      bar.style.width = '100%';
+      txt.textContent = '¡Completado!';
+      document.getElementById('lutInfo').style.display = 'block';
+      document.getElementById('lutInfo').textContent = `✅ LUT lista: ${data.n_samples.toLocaleString()} × ${data.n_bands} bandas (${data.band_selection}) — ${data.distribution}, σ=${data.noise_sigma} — ${data.storage_mb} MB`;
+      log('success', `✓ LUT generada: ${data.lut_id.substring(0,8)}... (${data.storage_mb} MB)`);
+      checkRunnable();
+    } else {
+      throw new Error(data.detail || 'Error desconocido');
+    }
+  } catch(e) {
+    log('error', 'Error LUT: ' + e.message);
+    bar.style.width = '0%';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '① Generar LUT (Python PROSAIL)';
+    setTimeout(() => prog.classList.remove('active'), 1500);
+  }
+}
+
+function pf(id) { return parseFloat(document.getElementById(id).value); }
+function sf(id, v) { document.getElementById(id).value = v; }
+
+// ============================================================
+//  PRESETS — rangos bibliográficos por tipo de cubierta
+//  Refs: Baret 2007, Jacquemoud 2009, Darvishzadeh 2008,
+//        Verrelst 2015 (ARTMO), Weiss & Baret 2016 (SNAP),
+//        Clevers & Gitelson 2013, Haboudane 2004
+// ============================================================
+const PRESETS = {
+  // ---- GENERAL ----
+  general: {
+    label:'General — Baret et al. (2007)',
+    N:[1.0,3.0], Cab:[1,90], Car:[0,25], Cbrown:[0,2.0],
+    Cw:[0.002,0.05], Cm:[0.001,0.025], LAI:[0,15], ALA:[20,80],
+    hot:[0.01,0.50], psoil:[0,1], rsoil:[0.2,3.5]
+  },
+  snap_default: {
+    label:'SNAP Biophysical Processor',
+    N:[1.2,2.2], Cab:[20,90], Car:[5,23], Cbrown:[0,0.5],
+    Cw:[0.005,0.035], Cm:[0.003,0.015], LAI:[0,8], ALA:[30,70],
+    hot:[0.05,0.50], psoil:[0,1], rsoil:[0.5,2.0]
+  },
+  // ---- CULTIVOS HERBÁCEOS ----
+  cereales: {
+    label:'Cereales (trigo, cebada, avena)',
+    N:[1.2,2.0], Cab:[15,70], Car:[3,18], Cbrown:[0,1.5],
+    Cw:[0.004,0.025], Cm:[0.002,0.012], LAI:[0,7], ALA:[50,75],
+    hot:[0.05,0.30], psoil:[0.3,1], rsoil:[0.6,2.0]
+  },
+  maiz: {
+    label:'Maíz',
+    N:[1.3,2.0], Cab:[20,80], Car:[5,20], Cbrown:[0,0.5],
+    Cw:[0.008,0.035], Cm:[0.003,0.015], LAI:[0.5,8], ALA:[55,75],
+    hot:[0.02,0.15], psoil:[0.2,0.8], rsoil:[0.6,1.8]
+  },
+  arroz: {
+    label:'Arroz',
+    N:[1.2,1.8], Cab:[20,75], Car:[4,18], Cbrown:[0,0.3],
+    Cw:[0.010,0.040], Cm:[0.002,0.010], LAI:[0.5,9], ALA:[40,65],
+    hot:[0.03,0.20], psoil:[0,0.5], rsoil:[0.3,1.2]
+  },
+  colza: {
+    label:'Colza / Girasol',
+    N:[1.3,2.2], Cab:[20,75], Car:[5,20], Cbrown:[0,0.8],
+    Cw:[0.008,0.035], Cm:[0.003,0.018], LAI:[0.5,7], ALA:[30,55],
+    hot:[0.03,0.25], psoil:[0.3,1], rsoil:[0.6,2.0]
+  },
+  horticola: {
+    label:'Hortícolas (huerta, regadío)',
+    N:[1.2,2.5], Cab:[15,80], Car:[3,22], Cbrown:[0,0.8],
+    Cw:[0.006,0.040], Cm:[0.002,0.015], LAI:[0.2,6], ALA:[25,55],
+    hot:[0.03,0.30], psoil:[0,0.8], rsoil:[0.5,2.0]
+  },
+  alfalfa: {
+    label:'Alfalfa / Praderas',
+    N:[1.2,1.8], Cab:[25,75], Car:[5,18], Cbrown:[0,0.5],
+    Cw:[0.008,0.030], Cm:[0.003,0.012], LAI:[1,8], ALA:[35,55],
+    hot:[0.05,0.30], psoil:[0.2,0.8], rsoil:[0.6,1.5]
+  },
+  // ---- LEÑOSOS ----
+  vinedo: {
+    label:'Viñedo',
+    N:[1.5,2.5], Cab:[15,60], Car:[4,18], Cbrown:[0,1.5],
+    Cw:[0.005,0.025], Cm:[0.005,0.020], LAI:[0.3,4], ALA:[35,60],
+    hot:[0.01,0.10], psoil:[0.3,1], rsoil:[0.6,2.5]
+  },
+  olivar: {
+    label:'Olivar',
+    N:[1.8,2.8], Cab:[20,55], Car:[5,18], Cbrown:[0.1,1.0],
+    Cw:[0.005,0.020], Cm:[0.008,0.022], LAI:[0.3,3.5], ALA:[40,65],
+    hot:[0.01,0.08], psoil:[0.4,1], rsoil:[0.8,3.0]
+  },
+  frutal: {
+    label:'Frutales',
+    N:[1.4,2.5], Cab:[20,70], Car:[5,20], Cbrown:[0,1.0],
+    Cw:[0.006,0.030], Cm:[0.004,0.018], LAI:[0.5,5], ALA:[35,60],
+    hot:[0.01,0.10], psoil:[0.2,1], rsoil:[0.6,2.0]
+  },
+  bosque_cad: {
+    label:'Bosque caducifolio',
+    N:[1.3,2.2], Cab:[20,75], Car:[5,22], Cbrown:[0,1.5],
+    Cw:[0.008,0.035], Cm:[0.004,0.015], LAI:[1,8], ALA:[40,60],
+    hot:[0.01,0.05], psoil:[0.3,0.8], rsoil:[0.3,1.2]
+  },
+  bosque_per: {
+    label:'Bosque perennifolio / Coníferas',
+    N:[1.5,2.8], Cab:[15,60], Car:[3,15], Cbrown:[0,1.0],
+    Cw:[0.005,0.025], Cm:[0.006,0.022], LAI:[1,10], ALA:[45,70],
+    hot:[0.005,0.04], psoil:[0.3,0.8], rsoil:[0.3,1.0]
+  },
+  dehesa: {
+    label:'Dehesa',
+    N:[1.5,2.5], Cab:[15,55], Car:[4,16], Cbrown:[0.1,1.5],
+    Cw:[0.004,0.020], Cm:[0.006,0.020], LAI:[0.2,4], ALA:[40,65],
+    hot:[0.01,0.08], psoil:[0.4,1], rsoil:[0.8,2.8]
+  },
+  // ---- VEGETACIÓN NATURAL ----
+  matorral: {
+    label:'Matorral mediterráneo',
+    N:[1.5,2.8], Cab:[10,50], Car:[3,15], Cbrown:[0.2,2.0],
+    Cw:[0.003,0.018], Cm:[0.006,0.025], LAI:[0.2,4], ALA:[35,65],
+    hot:[0.01,0.10], psoil:[0.5,1], rsoil:[0.6,2.5]
+  },
+  pradera_nat: {
+    label:'Pradera / Pastizal natural',
+    N:[1.2,1.8], Cab:[10,60], Car:[3,16], Cbrown:[0,1.5],
+    Cw:[0.004,0.020], Cm:[0.002,0.012], LAI:[0.3,5], ALA:[35,60],
+    hot:[0.05,0.40], psoil:[0.3,1], rsoil:[0.5,2.0]
+  },
+  humedal: {
+    label:'Humedal / Ribera',
+    N:[1.2,2.0], Cab:[25,80], Car:[5,22], Cbrown:[0,0.5],
+    Cw:[0.012,0.050], Cm:[0.002,0.012], LAI:[1,10], ALA:[30,55],
+    hot:[0.02,0.20], psoil:[0,0.4], rsoil:[0.3,1.0]
+  },
+  // ---- ESCASA VEGETACIÓN ----
+  suelo_desnudo: {
+    label:'Suelo desnudo / Barbecho',
+    N:[1.0,2.0], Cab:[1,15], Car:[0,5], Cbrown:[0.5,2.0],
+    Cw:[0.001,0.008], Cm:[0.001,0.010], LAI:[0,0.5], ALA:[20,60],
+    hot:[0.01,0.50], psoil:[0,1], rsoil:[0.3,3.5]
+  },
+  estepario: {
+    label:'Estepario / Árido',
+    N:[1.3,2.5], Cab:[5,35], Car:[2,12], Cbrown:[0.3,2.0],
+    Cw:[0.002,0.012], Cm:[0.004,0.020], LAI:[0,2], ALA:[30,70],
+    hot:[0.02,0.30], psoil:[0.6,1], rsoil:[1.0,3.5]
+  },
+  // ---- ARALAR (TFG — ZEC ES2120011) ----
+  aralar_pastos: {
+    label:'Aralar — Pastos pastorales (TFG)',
+    N:[1.2,2.5], Cab:[10,80], Car:[2,20], Cbrown:[0,1.0],
+    Cw:[0.005,0.04], Cm:[0.002,0.015], LAI:[0.2,8.0], ALA:[20,75],
+    hot:[0.005,0.50], psoil:[0,1], rsoil:[0.2,3.5]
+  },
+  aralar_hayedo: {
+    label:'Aralar — Hayedo (Fagus sylvatica, HIC 9120/9150)',
+    N:[1.5,2.5], Cab:[25,75], Car:[5,22], Cbrown:[0,1.0],
+    Cw:[0.008,0.035], Cm:[0.004,0.018], LAI:[1.5,8.0], ALA:[20,55],
+    hot:[0.005,0.10], psoil:[0.3,0.8], rsoil:[0.3,1.0]
+  }
+};
+
+function applyPreset(key) {
+  const p = PRESETS[key];
+  if (!p) return;
+  const fields = ['N','Cab','Car','Cbrown','Cw','Cm','LAI','ALA','hot','psoil','rsoil'];
+  fields.forEach(f => {
+    if (p[f]) { sf(f+'_min', p[f][0]); sf(f+'_max', p[f][1]); }
+  });
+  log('info', `Preset aplicado: ${p.label}`);
+}
+
+// ============================================================
+//  GEOMETRY MODE TOGGLE & PRESETS
+// ============================================================
+function toggleGeomMode() {
+  const mode = (document.querySelector('input[name="geomMode"]:checked') || {}).value || 'sampled';
+  const fixedBlock = document.getElementById('geomFixedBlock');
+  const sampledBlock = document.getElementById('geomSampledBlock');
+  if (mode === 'sampled') {
+    fixedBlock.classList.add('hidden');
+    sampledBlock.classList.remove('hidden');
+  } else {
+    fixedBlock.classList.remove('hidden');
+    sampledBlock.classList.add('hidden');
+  }
+}
+
+const GEOM_PRESETS = {
+  // Aralar (43°N) en temporada de crecimiento abr–oct, paso S2 ~11:00 hora solar
+  aralar:      { sza:[20,60],  vza:[0,12], raa:[0,180], label:'Aralar abr–oct (43°N)' },
+  // Aralar año completo (incluye invierno con SZA alto)
+  aralar_full: { sza:[20,75],  vza:[0,12], raa:[0,180], label:'Aralar año completo' },
+  // Sentinel-2 global, latitudes bajas a templadas
+  s2_global:   { sza:[10,70],  vza:[0,12], raa:[0,180], label:'S2 global (10–70°)' }
+};
+
+function applyGeomPreset(key) {
+  const p = GEOM_PRESETS[key];
+  if (!p) return;
+  sf('sza_min', p.sza[0]); sf('sza_max', p.sza[1]);
+  sf('vza_min', p.vza[0]); sf('vza_max', p.vza[1]);
+  sf('raa_min', p.raa[0]); sf('raa_max', p.raa[1]);
+  // Asegurarse de que estamos en modo muestreada
+  const radio = document.querySelector('input[name="geomMode"][value="sampled"]');
+  if (radio && !radio.checked) { radio.checked = true; toggleGeomMode(); }
+  log('info', `Preset geometría aplicado: ${p.label}`);
+}
+
+// ============================================================
+//  GEOMETRY CALCULATOR (sun-sensor from date, lat, satellite)
+// ============================================================
+const DEG2RAD = Math.PI / 180;
+
+function calcGeom() {
+  const dateStr = document.getElementById('gc_date').value;
+  let lat = parseFloat(document.getElementById('gc_lat').value);
+  const sat = document.getElementById('gc_sat').value;
+  const swp = parseFloat(document.getElementById('gc_swath').value);
+  if (!dateStr || isNaN(lat)) return;
+  lat = Math.max(-66, Math.min(66, lat));
+
+  const d = new Date(dateStr), y = d.getFullYear();
+  const doy = Math.floor((d - new Date(y, 0, 0)) / 86400000);
+
+  // Solar declination (Spencer approximation)
+  const decl = 23.45 * Math.sin(2 * Math.PI / 365 * (doy + 284));
+
+  // Overpass local solar time: S2 ≈ 10:30, L8/L9 ≈ 10:00
+  const lst = (sat === 'S2') ? 10.5 : 10.0;
+  const omega = 15 * (lst - 12); // hour angle in degrees
+
+  const lr = lat * DEG2RAD, dr = decl * DEG2RAD, wr = omega * DEG2RAD;
+
+  // SZA
+  const csza = Math.sin(lr) * Math.sin(dr) + Math.cos(lr) * Math.cos(dr) * Math.cos(wr);
+  let sza = Math.acos(Math.max(-1, Math.min(1, csza))) / DEG2RAD;
+
+  // Solar azimuth (from North, clockwise)
+  const ssza = Math.sin(sza * DEG2RAD);
+  const sinAz = -Math.cos(dr) * Math.sin(wr) / Math.max(ssza, 1e-10);
+  const cosAz = (Math.sin(dr) - Math.cos(sza * DEG2RAD) * Math.sin(lr)) / (ssza * Math.cos(lr) + 1e-10);
+  let sunAz = Math.atan2(sinAz, cosAz) / DEG2RAD;
+  if (sunAz < 0) sunAz += 360;
+
+  // Satellite orbital parameters
+  const incl = (sat === 'S2') ? 98.62 : 98.2;   // inclination (°)
+  const alt = (sat === 'S2') ? 786 : 705;         // orbit altitude (km)
+  const halfSwath = (sat === 'S2') ? 145 : 92.5;  // half-swath width (km)
+
+  // Ground track azimuth (descending node)
+  const cosI = Math.cos(incl * DEG2RAD);
+  const trackAz = 180 + Math.asin(cosI / Math.max(Math.cos(lr), 1e-10)) / DEG2RAD;
+
+  // VZA from swath position
+  const crossDist = swp * halfSwath; // km from nadir, + = east
+  let vza = Math.atan(Math.abs(crossDist) / alt) / DEG2RAD;
+
+  // Sensor viewing azimuth: perpendicular to track
+  let viewAz;
+  if (Math.abs(swp) < 0.05) { viewAz = sunAz; vza = 0; } // nadir
+  else if (swp > 0) viewAz = trackAz + 90; // east side
+  else viewAz = trackAz - 90; // west side
+  if (viewAz < 0) viewAz += 360;
+  if (viewAz >= 360) viewAz -= 360;
+
+  // RAA
+  let raa = Math.abs(sunAz - viewAz);
+  if (raa > 180) raa = 360 - raa;
+
+  // Clamp & round
+  sza = Math.round(Math.max(0, Math.min(80, sza)));
+  vza = Math.round(Math.max(0, Math.min(80, vza)));
+  raa = Math.round(Math.max(0, Math.min(180, raa)));
+
+  // Apply to manual inputs
+  document.getElementById('sza').value = sza;
+  document.getElementById('vza').value = vza;
+  document.getElementById('raa').value = raa;
+  // Calc/extract → switch UI to fixed mode (single-scene geometry)
+  const _rf = document.querySelector('input[name="geomMode"][value="fixed"]');
+  if (_rf && !_rf.checked) { _rf.checked = true; toggleGeomMode(); }
+
+  // Show results
+  const out = document.getElementById('gc_out');
+  const satName = (sat === 'S2') ? 'Sentinel-2' : 'Landsat 8/9';
+  out.innerHTML =
+    `<strong>${satName}</strong> · DOY: ${doy} · δ = ${decl.toFixed(1)}°<br>` +
+    `θ<sub>s</sub> (SZA) = <strong>${sza}°</strong> · θ<sub>o</sub> (VZA) = <strong>${vza}°</strong> · φ (RAA) = <strong>${raa}°</strong><br>` +
+    `Az solar = ${sunAz.toFixed(0)}° · Az track ≈ ${trackAz.toFixed(0)}°`;
+  out.style.display = 'block';
+
+  log('success', `Geometría calculada: SZA=${sza}° VZA=${vza}° RAA=${raa}° (${satName}, lat=${lat}°, ${dateStr})`);
+}
+
+// ============================================================
+//  1b. METADATA XML UPLOAD — extract geometry from MTD_TL.xml
+// ============================================================
+async function uploadMetadataXML(file) {
+  if (!file) return;
+  const dropZone = document.getElementById('xmlDropZone');
+  const out = document.getElementById('xml_out');
+
+  // Visual feedback
+  dropZone.innerHTML = '<div style="font-size:11px;color:var(--accent-cyan)">⏳ Parseando ' + file.name + '...</div>';
+
+  const formData = new FormData();
+  formData.append('file', file);
+
+  try {
+    const resp = await fetch('/api/parse-metadata', { method: 'POST', body: formData });
+    const data = await resp.json();
+
+    if (data.error) {
+      dropZone.innerHTML = '<div style="font-size:20px;margin-bottom:4px">📄</div><div style="font-size:11px;color:var(--text-muted)">Arrastra <strong>MTD_TL.xml</strong> aquí o haz clic</div><input type="file" id="xmlFileInput" accept=".xml" style="display:none" onchange="if(this.files[0]) uploadMetadataXML(this.files[0])">';
+      out.innerHTML = '<span style="color:var(--accent-red)">✗ ' + data.error + '</span>';
+      out.style.display = 'block';
+      log('error', 'Error parseando metadatos: ' + data.error);
+      return;
+    }
+
+    // Apply values to inputs
+    document.getElementById('sza').value = data.sza;
+    document.getElementById('vza').value = data.vza;
+    document.getElementById('raa').value = data.raa;
+    // Extract from metadata → switch UI to fixed mode (single-scene geometry)
+    const _rfx = document.querySelector('input[name="geomMode"][value="fixed"]');
+    if (_rfx && !_rfx.checked) { _rfx.checked = true; toggleGeomMode(); }
+
+    // Show results
+    out.innerHTML =
+      `✓ <strong>${file.name}</strong><br>` +
+      `θ<sub>s</sub> (SZA) = <strong>${data.sza}°</strong> · ` +
+      `θ<sub>o</sub> (VZA) = <strong>${data.vza}°</strong> · ` +
+      `φ (RAA) = <strong>${data.raa}°</strong><br>` +
+      `<span style="color:var(--text-muted)">Az solar = ${data.saa}° · Az sensor = ${data.vaa}° · ` +
+      `${data.n_bands_used} bandas promediadas</span>`;
+    out.style.display = 'block';
+
+    // Restore drop zone
+    dropZone.innerHTML =
+      '<div style="font-size:20px;margin-bottom:4px">✅</div>' +
+      '<div style="font-size:11px;color:var(--accent-green)"><strong>' + file.name + '</strong> · valores aplicados</div>' +
+      '<input type="file" id="xmlFileInput" accept=".xml" style="display:none" onchange="if(this.files[0]) uploadMetadataXML(this.files[0])">';
+
+    log('success', `Geometría desde metadatos: SZA=${data.sza}° VZA=${data.vza}° RAA=${data.raa}° (SAA=${data.saa}° VAA=${data.vaa}°)`);
+
+  } catch (e) {
+    dropZone.innerHTML = '<div style="font-size:20px;margin-bottom:4px">📄</div><div style="font-size:11px;color:var(--text-muted)">Arrastra <strong>MTD_TL.xml</strong> aquí o haz clic</div><input type="file" id="xmlFileInput" accept=".xml" style="display:none" onchange="if(this.files[0]) uploadMetadataXML(this.files[0])">';
+    out.innerHTML = '<span style="color:var(--accent-red)">✗ Error de conexión: ' + e.message + '</span>';
+    out.style.display = 'block';
+    log('error', 'Error subiendo XML: ' + e.message);
+  }
+}
+
+// ============================================================
+//  2. FILE UPLOAD — DIMAP (two-step)
+// ============================================================
+const S2_BANDS = ['B2','B3','B4','B5','B6','B7','B8','B8A','B11','B12'];
+const S2_ALIASES = {
+  'B2':['B2','b2','B02'],'B3':['B3','b3','B03'],'B4':['B4','b4','B04'],
+  'B5':['B5','b5','B05'],'B6':['B6','b6','B06'],'B7':['B7','b7','B07'],
+  'B8':['B8','b8','B08'],'B8A':['B8A','b8a','B8a','B08A'],
+  'B11':['B11','b11'],'B12':['B12','b12']
+};
+
+// Step 1: Load .dim file
+async function handleDimFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  log('info', `Cargando .dim: ${file.name}`);
+
+  const text = await file.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(text, 'text/xml');
+  const w = parseInt(doc.querySelector('NCOLS')?.textContent || '0');
+  const h = parseInt(doc.querySelector('NROWS')?.textContent || '0');
+  const bands = [];
+  doc.querySelectorAll('Spectral_Band_Info').forEach(el => {
+    bands.push(el.querySelector('BAND_NAME')?.textContent || '');
+  });
+
+  uploadState.dimFile = file;
+  uploadState.dimMeta = { width: w, height: h, bands };
+  uploadState.format = 'dimap';
+
+  // Count S2 matches
+  let found = 0;
+  for (const b of S2_BANDS) {
+    if (bands.some(bn => S2_ALIASES[b].some(a => bn === a || bn.includes(a)))) found++;
+  }
+
+  log('success', `✓ .dim: ${w}×${h}, ${bands.length} bandas, ${found}/10 S2 detectadas`);
+  document.getElementById('dimapStatus').innerHTML = `✓ .dim OK — Ahora seleccione la carpeta <strong>.data</strong>`;
+
+  // Enable step 2
+  const btn2 = document.getElementById('btnData');
+  btn2.style.opacity = '1';
+  btn2.style.pointerEvents = 'auto';
+}
+
+// Step 2: Load .data/ folder, identify S2 bands
+async function handleDataFolder(event) {
+  const allFiles = Array.from(event.target.files);
+  const imgFiles = allFiles.filter(f => f.name.match(/\.img$/i));
+  const hdrFiles = allFiles.filter(f => f.name.match(/\.hdr$/i));
+
+  log('info', `Carpeta .data: ${allFiles.length} archivos, ${imgFiles.length} .img, ${hdrFiles.length} .hdr`);
+
+  // Match S2 bands
+  const matched = [];
+  for (const band of S2_BANDS) {
+    const aliases = S2_ALIASES[band];
+    let img = null, hdr = null;
+    for (const f of imgFiles) {
+      const base = f.name.replace(/\.img$/i, '');
+      if (aliases.some(a => base === a || base.toLowerCase() === a.toLowerCase())) { img = f; break; }
+    }
+    if (img) {
+      const hdrName = img.name.replace(/\.img$/i, '.hdr');
+      hdr = hdrFiles.find(f => f.name.toLowerCase() === hdrName.toLowerCase()) || null;
+      matched.push({ band, imgFile: img, hdrFile: hdr });
+      log('success', `  ✓ ${band} → ${img.name} (${(img.size/1024/1024).toFixed(1)} MB)`);
+    } else {
+      log('warn', `  ✗ ${band} no encontrada`);
+    }
+  }
+
+  if (matched.length < 4) {
+    log('error', `Solo ${matched.length} bandas S2. Se necesitan al menos 4.`);
+    return;
+  }
+
+  uploadState.s2Files = matched;
+  uploadState.format = 'dimap';
+
+  const totalMB = matched.reduce((s, m) => s + m.imgFile.size + (m.hdrFile?.size || 0), 0) / (1024*1024);
+  document.getElementById('dimapStatus').innerHTML = `✓ ${matched.length} bandas S2 (${totalMB.toFixed(1)} MB) — Listo`;
+  document.getElementById('uploadZone').classList.add('has-file');
+  document.getElementById('fileInfo').style.display = 'block';
+  document.getElementById('fileName').textContent = uploadState.dimFile?.name?.replace('.dim','') || 'DIMAP';
+  document.getElementById('fileDims').textContent = `${uploadState.dimMeta?.width}×${uploadState.dimMeta?.height} • ${matched.length} bandas S2 • ${totalMB.toFixed(1)} MB`;
+
+  log('success', `✓ DIMAP listo para subir (${matched.length} bandas, ${totalMB.toFixed(1)} MB)`);
+  checkRunnable();
+}
+
+// ============================================================
+//  2b. FILE UPLOAD — GeoTIFF
+// ============================================================
+function handleTifFile(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  uploadState.tifFile = file;
+  uploadState.format = 'geotiff';
+  uploadState.s2Files = [];
+
+  document.getElementById('uploadZone').classList.add('has-file');
+  document.getElementById('fileInfo').style.display = 'block';
+  document.getElementById('fileName').textContent = file.name;
+  document.getElementById('fileDims').textContent = `${(file.size/(1024*1024)).toFixed(1)} MB`;
+
+  log('info', `GeoTIFF seleccionado: ${file.name} (${(file.size/(1024*1024)).toFixed(1)} MB)`);
+  checkRunnable();
+}
+
+function checkRunnable() {
+  const hasFile = uploadState.format === 'geotiff' ? !!uploadState.tifFile :
+                  uploadState.format === 'dimap' ? uploadState.s2Files.length >= 4 : false;
+  document.getElementById('btnRun').disabled = !(hasFile && currentLutId);
+}
+
+// ============================================================
+//  3. RUN INVERSION (upload files + call API)
+// ============================================================
+async function runInversion() {
+  if (!currentLutId) { log('error', 'Genere una LUT primero'); return; }
+
+  const btn = document.getElementById('btnRun');
+  const prog = document.getElementById('invProg');
+  const bar = document.getElementById('invProgBar');
+  const txt = document.getElementById('invProgText');
+
+  btn.disabled = true;
+  btn.classList.add('running');
+  prog.classList.add('active');
+  bar.style.width = '5%';
+  txt.textContent = 'Subiendo archivos al servidor...';
+
+  const formData = new FormData();
+  formData.append('lut_id', currentLutId);
+  formData.append('k_best', document.getElementById('kBest').value);
+  formData.append('target_resolution', 20);
+
+  if (uploadState.format === 'dimap') {
+    // Send .dim + S2 band .img + .hdr files
+    if (uploadState.dimFile) {
+      formData.append('files', uploadState.dimFile, uploadState.dimFile.name);
+    }
+    for (const m of uploadState.s2Files) {
+      formData.append('files', m.imgFile, m.imgFile.name);
+      if (m.hdrFile) formData.append('files', m.hdrFile, m.hdrFile.name);
+    }
+    log('info', `Subiendo DIMAP: .dim + ${uploadState.s2Files.length} bandas...`);
+  } else {
+    formData.append('files', uploadState.tifFile, uploadState.tifFile.name);
+    log('info', `Subiendo GeoTIFF: ${uploadState.tifFile.name}...`);
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/invert/image`, {
+      method: 'POST', body: formData
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+
+    currentJobId = data.job_id;
+    log('info', `Job iniciado: ${data.job_id.substring(0,8)} (${data.format})`);
+    bar.style.width = '10%';
+    txt.textContent = 'Procesando en servidor...';
+
+    // Start polling for progress
+    pollJobStatus(data.job_id);
+
+  } catch(e) {
+    log('error', 'Error: ' + e.message);
+    btn.disabled = false;
+    btn.classList.remove('running');
+    prog.classList.remove('active');
+  }
+}
+
+// ============================================================
+//  4. HTTP POLLING for progress
+// ============================================================
+function pollJobStatus(jobId) {
+  const bar = document.getElementById('invProgBar');
+  const txt = document.getElementById('invProgText');
+  const btn = document.getElementById('btnRun');
+
+  const interval = setInterval(async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/job/${jobId}`);
+      if (!res.ok) return;
+      const s = await res.json();
+      if (s.progress !== undefined) {
+        bar.style.width = s.progress + '%';
+        txt.textContent = `${s.message || ''} (${s.progress}%)`;
+      }
+      if (s.status === 'completed') {
+        clearInterval(interval);
+        log('success', '✓ Inversión completada');
+        btn.disabled = false;
+        btn.classList.remove('running');
+        loadResults(jobId, s.meta);
+      } else if (s.status === 'error') {
+        clearInterval(interval);
+        log('error', 'Error servidor: ' + s.message);
+        btn.disabled = false;
+        btn.classList.remove('running');
+      }
+    } catch(e) {
+      // Network hiccup, keep polling
+    }
+  }, 800);
+}
+
+// ============================================================
+//  5. RESULTS VISUALIZATION
+// ============================================================
+const COLORMAPS = {
+  LAI:  {stops: [[0,'#1a0a00'],[.15,'#3d1c00'],[.3,'#2d5016'],[.5,'#4a8c28'],[.7,'#6abf3b'],[.85,'#a8e86e'],[1,'#e8ffc4']], range:[0,7]},
+  Cab:  {stops: [[0,'#1a1500'],[.2,'#4a3800'],[.4,'#7a6a00'],[.6,'#a8a020'],[.8,'#c8d040'],[1,'#f0ff80']], range:[0,80]},
+  CCC:  {stops: [[0,'#0a0a20'],[.2,'#0a2040'],[.4,'#0a4060'],[.6,'#10809a'],[.8,'#40c0c0'],[1,'#a0ffee']], range:[0,4]},
+  Cw:   {stops: [[0,'#100020'],[.25,'#2a0050'],[.5,'#5520a0'],[.75,'#8844d0'],[1,'#cc88ff']], range:[0,0.03]},
+  unc_LAI: {stops: [[0,'#001000'],[.3,'#304010'],[.6,'#a08020'],[.8,'#d04020'],[1,'#ff2020']], range:[0,3]}
+};
+
+async function loadResults(jobId, meta) {
+  document.getElementById('welcomeScreen').classList.add('hidden');
+  document.getElementById('resultsContainer').classList.remove('hidden');
+  document.getElementById('invProg').classList.remove('active');
+
+  const grid = document.getElementById('resultsGrid');
+  grid.innerHTML = '';
+
+  // Show format info
+  const hasGeo = meta?.has_geotiff;
+  const hasGeoref = meta?.has_georef;
+  const fb = document.getElementById('formatBadge');
+  if (fb) {
+    if (hasGeo && hasGeoref) fb.textContent = '✓ GeoTIFF georeferenciado';
+    else if (hasGeo) fb.textContent = '✓ GeoTIFF (sin CRS)';
+    else fb.textContent = '⚠ Solo float32 binario';
+  }
+
+  const variables = [
+    {key:'LAI', label:'Leaf Area Index', unit:'m²/m²', badge:'badge-lai'},
+    {key:'Cab', label:'Clorofila a+b', unit:'µg/cm²', badge:'badge-cab'},
+    {key:'CCC', label:'Canopy Chlorophyll Content', unit:'g/m²', badge:'badge-ccc'},
+    {key:'Cw',  label:'Contenido de agua', unit:'cm', badge:'badge-cw'},
+    {key:'unc_LAI', label:'Incertidumbre LAI', unit:'σ', badge:'badge-unc'},
+  ];
+
+  // Load and render each variable
+  for (const v of variables) {
+    const stats = meta?.stats?.[v.key];
+    const card = document.createElement('div');
+    card.className = 'result-card';
+    card.innerHTML = `
+      <div class="result-header">
+        <div class="result-title"><span class="badge ${v.badge}">${v.key}</span> ${v.label}</div>
+        <div style="display:flex;gap:6px">
+          <button onclick="downloadVar('${jobId}','${v.key}')" style="background:var(--accent-blue);color:white;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;font-size:10px">⬇ .tif</button>
+        </div>
+      </div>
+      <canvas id="canvas_${v.key}" class="result-canvas" title="${v.key}"></canvas>
+      <div class="result-stats" id="stats_${v.key}">
+        ${stats ? `min:<span>${stats.min.toFixed(3)}</span> media:<span>${stats.mean.toFixed(3)}</span> max:<span>${stats.max.toFixed(3)}</span> σ:<span>${stats.std.toFixed(3)}</span> válidos:<span>${stats.valid_pct}%</span>` : 'Cargando...'}
+      </div>
+    `;
+    grid.appendChild(card);
+
+    // Fetch binary and render on canvas
+    renderVariable(jobId, v.key, meta?.width, meta?.height);
+  }
+}
+
+async function renderVariable(jobId, varName, width, height) {
+  if (!width || !height) {
+    // Fetch meta if not available
+    try {
+      const res = await fetch(`${API_URL}/api/result/${jobId}/meta`);
+      const meta = await res.json();
+      width = meta.width; height = meta.height;
+    } catch(e) { return; }
+  }
+
+  try {
+    const res = await fetch(`${API_URL}/api/result/${jobId}/${varName}/raw`);
+    const buf = await res.arrayBuffer();
+    const data = new Float32Array(buf);
+
+    const canvas = document.getElementById(`canvas_${varName}`);
+    if (!canvas) return;
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext('2d');
+    const imgData = ctx.createImageData(width, height);
+
+    const cm = COLORMAPS[varName] || COLORMAPS.LAI;
+    const [vMin, vMax] = cm.range;
+
+    for (let i = 0; i < data.length; i++) {
+      const v = data[i];
+      const px = i * 4;
+      if (v <= -9000 || isNaN(v) || !isFinite(v)) {
+        imgData.data[px] = imgData.data[px+1] = imgData.data[px+2] = 15;
+        imgData.data[px+3] = 255;
+        continue;
+      }
+      const t = Math.max(0, Math.min(1, (v - vMin) / (vMax - vMin)));
+      const [r, g, b] = interpolateColormap(t, cm.stops);
+      imgData.data[px] = r; imgData.data[px+1] = g; imgData.data[px+2] = b; imgData.data[px+3] = 255;
+    }
+
+    ctx.putImageData(imgData, 0, 0);
+    log('info', `  ${varName} renderizado (${width}×${height})`);
+
+    // Mouse hover pixel inspector
+    canvas.onmousemove = (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const px = Math.floor((e.clientX - rect.left) / rect.width * width);
+      const py = Math.floor((e.clientY - rect.top) / rect.height * height);
+      const idx = py * width + px;
+      if (idx >= 0 && idx < data.length) {
+        const v = data[idx];
+        canvas.title = v > -9000 ? `${varName}: ${v.toFixed(4)} @ (${px},${py})` : `NoData @ (${px},${py})`;
+      }
+    };
+
+  } catch(e) {
+    log('warn', `No se pudo cargar ${varName}: ${e.message}`);
+  }
+}
+
+function interpolateColormap(t, stops) {
+  for (let i = 1; i < stops.length; i++) {
+    if (t <= stops[i][0]) {
+      const f = (t - stops[i-1][0]) / (stops[i][0] - stops[i-1][0]);
+      const c0 = hexToRgb(stops[i-1][1]);
+      const c1 = hexToRgb(stops[i][1]);
+      return [
+        Math.round(c0[0] + (c1[0]-c0[0])*f),
+        Math.round(c0[1] + (c1[1]-c0[1])*f),
+        Math.round(c0[2] + (c1[2]-c0[2])*f)
+      ];
+    }
+  }
+  return hexToRgb(stops[stops.length-1][1]);
+}
+
+function hexToRgb(hex) {
+  const h = hex.replace('#','');
+  return [parseInt(h.substr(0,2),16), parseInt(h.substr(2,2),16), parseInt(h.substr(4,2),16)];
+}
+
+// ============================================================
+//  6. DOWNLOADS
+// ============================================================
+function downloadVar(jobId, variable) {
+  window.open(`${API_URL}/api/download/${jobId}/${variable}`, '_blank');
+  log('info', `Descargando ${variable}...`);
+}
+
+function downloadAll() {
+  if (!currentJobId) return;
+  ['LAI','Cab','Cw','CCC','unc_LAI'].forEach((v,i) => {
+    setTimeout(() => downloadVar(currentJobId, v), i * 400);
+  });
+}
+</script>
+</body>
+</html>

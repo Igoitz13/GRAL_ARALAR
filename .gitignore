@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Versiones antiguas (backups locales)
+*.old
+
+# Caché efímera de la web-app PROSAIL
+# (LUTs .pkl regenerables, jobs por UUID, backups SIGN/ y VIEJOS/)
+scripts/python/temp_prosail/
+scripts/python/web-app/temp_prosail/
+scripts/python/static/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Editores
+.idea/
+.vscode/
+*.swp
