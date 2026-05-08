@@ -1,0 +1,137 @@
+# Cartografia pastoral v5 — Aralar 2025
+# Generado: 2026-04-24T12:28:30
+# Comando: python cartografia_pastoral_v5.py --prosail .\\PROSAIL_NN_Aralar_2025.tif --hic .\HIC_tipo_aralar.tif --bordas .\dist_borda_aralar.tif --dem .\MDT05_aralar.tif --output_dir mapas\2025 --carga 0.5 --temporada 180 --ipp_a .\\IPP_estrategia_A_2025.tif --ipp_csv .\diagnostico_pastoral.csv
+# Log: mapas\2025\aralar_resumen_2025.txt
+
+=================================================================
+  CARTOGRAFIA PASTORAL v5 — Aralar 2025
+  Carga ref: 0.5 UGM/ha | Temporada: 180 dias
+  Turnover: 3.0 | Aprovechamiento: 0.55
+  Estrategias IPP disponibles: C (siempre) + A
+=================================================================
+
+1. Cargando PROSAIL GeoTIFF...
+   Pixeles validos: 126,004
+   LAI rango: [0.21, 6.27]
+
+2. Cargando capas auxiliares...
+   HIC: .\HIC_tipo_aralar.tif
+     TIPO 1 (Pasto): 102,187 px (4087 ha)
+     TIPO 2 (Brezal): 1,032 px (41 ha)
+     TIPO 3 (Hayedo): 52,837 px (2113 ha)
+     TIPO 4 (Encinar): 8,415 px (337 ha)
+   Bordas: .\dist_borda_aralar.tif
+   DEM 5m: .\MDT05_aralar.tif
+   Pendiente rango: [0.0, 76.2] grados
+
+   Pixeles PASTO validos: 73,174 (2927 ha)
+
+3. Biomasa forrajera 2025 (solo pastos)...
+  -> mapas\2025\aralar_pastos_mapa_biomasa_2025.png
+4. Calidad pastoral 2025 (solo pastos)...
+  -> mapas\2025\aralar_pastos_mapa_calidad_2025.png
+5. Capacidad de acogida 2025 (solo pastos, turnover=3.0)...
+  -> mapas\2025\aralar_pastos_mapa_carga_2025.png
+6. Balance forrajero 2025 (demanda=0.5 UGM/ha)...
+  -> mapas\2025\aralar_pastos_mapa_balance_2025.png
+7. Diagnostico de riesgo 2025 (pendiente DEM 5m)...
+  -> mapas\2025\aralar_pastos_mapa_riesgo_2025.png
+8. Mapa de pendientes 2025 (DEM 5m)...
+  -> mapas\2025\aralar_pastos_mapa_pendiente_2025.png
+
+9. IPP espacializado 2025 (todos los habitats)...
+  -> mapas\2025\aralar_mapa_IPP_espacializado_2025.png
+  -> mapas\2025\aralar_mapa_IPP_C_pastos_2025.png
+
+  Cargando CSV zonal: .\diagnostico_pastoral.csv
+  CSV zonal cargado: 6 zonas para el año 2025
+
+9b. IPP Estrategia A 2025 (correccion climatica GAM G6)...
+  -> mapas\2025\aralar_mapa_IPP_A_todos_2025.png
+  -> mapas\2025\aralar_mapa_IPP_A_pastos_2025.png
+
+9c. IPP Estrategia B 2025 (espacializado por zona desde CSV R)...
+  -> mapas\2025\aralar_mapa_IPP_B_pastos_2025.png
+
+9d. IPP Estrategia D 2025 (espacializado por zona desde CSV R)...
+  -> mapas\2025\aralar_mapa_IPP_D_todos_2025.png
+  -> mapas\2025\aralar_mapa_IPP_D_pastos_2025.png
+
+9e. IPP consenso + concordancia (4 estrategias: A+B+C+D)...
+  -> mapas\2025\aralar_mapa_IPP_consenso_pastos_2025.png
+  -> mapas\2025\aralar_mapa_IPP_concordancia_pastos_2025.png
+
+  Comparativa entre estrategias por anillo (solo pastos):
+  Anillo                     IPP_A  IPP_B  IPP_C  IPP_D  Consen.
+  Cercano <500m              -0.158  -0.148  +0.035  -0.005  -0.069
+  Intermedio 500-1500m       -0.150  -0.132  +0.054  -0.003  -0.058
+  Remoto >1500m              -0.071  +0.000  +0.298  -0.000  +0.057
+
+  Distribucion de concordancia (% pixeles pasto, n=4 estrategias):
+    1/4 (sensible):  18.6%
+    2/4 (sensible):   5.2%
+    3/4 (parcial):  32.7%
+    4/4 (robusto):  43.4%
+
+10. Exportando GeoTIFFs 2025...
+  -> mapas\2025\aralar_biomasa_pastos_2025.tif
+  -> mapas\2025\aralar_capacidad_pastos_2025.tif
+  -> mapas\2025\aralar_balance_pastos_2025.tif
+  -> mapas\2025\aralar_IPP_C_espacializado_2025.tif
+  -> mapas\2025\aralar_IPP_C_pastos_2025.tif
+  -> mapas\2025\aralar_pendiente_2025.tif
+  -> mapas\2025\aralar_IPP_A_todos_2025.tif
+  -> mapas\2025\aralar_IPP_A_pastos_2025.tif
+  -> mapas\2025\aralar_IPP_B_pastos_2025.tif
+  -> mapas\2025\aralar_IPP_D_todos_2025.tif
+  -> mapas\2025\aralar_IPP_D_pastos_2025.tif
+  -> mapas\2025\aralar_IPP_consenso_pastos_2025.tif
+  -> mapas\2025\aralar_calidad_pastos_2025.tif
+  -> mapas\2025\aralar_riesgo_pastos_2025.tif
+  -> mapas\2025\aralar_anillo_dist_2025.tif
+  -> mapas\2025\aralar_IPP_concordancia_2025.tif
+
+=================================================================
+  RESUMEN — Pastos de Aralar 2025
+  Carga: 0.5 UGM/ha | Temporada: 180 d
+  Turnover: 3.0 | Aprovech.: 0.55
+=================================================================
+  Superficie pastoral:     2927 ha
+  Biomasa en pie media:    764 kg MS/ha
+  Produccion total media:  2291 kg MS/ha
+  Capacidad media:         0.58 UGM/ha
+  Balance medio:           +0.083 UGM/ha
+  Pendiente media:         20.7 grados
+
+  % pixeles deficit:       41.6%
+  % pixeles equilibrio:    32.1%
+  % pixeles excedente:     41.4%
+
+  IPP medio por anillo (solo pastos):
+    Cercano <500m            : IPP = +0.035  (n=37,253)
+    Intermedio 500-1500m     : IPP = +0.054  (n=33,247)
+    Remoto >1500m            : IPP = +0.298  (n=2,674)
+
+  IPP medio por tipo de habitat:
+    Pasto     : IPP = +0.053  (n=73,174)
+    Hayedo    : IPP = -0.014  (n=39,728)
+
+  Calidad pastoral:
+    Muy pobre   :   0.0%
+    Pobre       :   4.1%
+    Moderado    :  23.0%
+    Bueno       :  70.3%
+    Excelente   :   2.6%
+
+  Diagnostico de riesgo:
+    Matorralizacion     :  12.7%
+    Subpastoreo leve    :  25.6%
+    Equilibrio          :  32.4%
+    Presion elevada     :  16.1%
+    Degradacion         :   8.5%
+    Erosion             :   4.7%
+
+  Ficheros en: mapas\2025/
+  Resumen completo en: mapas\2025\aralar_resumen_2025.txt
+=================================================================
+

@@ -1,0 +1,137 @@
+# Cartografia pastoral v5 — Aralar 2022
+# Generado: 2026-04-24T12:29:18
+# Comando: python cartografia_pastoral_v5.py --prosail .\\PROSAIL_NN_Aralar_2022.tif --hic .\HIC_tipo_aralar.tif --bordas .\dist_borda_aralar.tif --dem .\MDT05_aralar.tif --output_dir mapas\2022_LIFE --carga 0.7 --temporada 180 --ipp_a .\\IPP_estrategia_A_2022.tif --ipp_csv .\diagnostico_pastoral.csv
+# Log: mapas\2022_LIFE\aralar_resumen_2022.txt
+
+=================================================================
+  CARTOGRAFIA PASTORAL v5 — Aralar 2022
+  Carga ref: 0.7 UGM/ha | Temporada: 180 dias
+  Turnover: 3.0 | Aprovechamiento: 0.55
+  Estrategias IPP disponibles: C (siempre) + A
+=================================================================
+
+1. Cargando PROSAIL GeoTIFF...
+   Pixeles validos: 126,005
+   LAI rango: [0.19, 6.29]
+
+2. Cargando capas auxiliares...
+   HIC: .\HIC_tipo_aralar.tif
+     TIPO 1 (Pasto): 102,187 px (4087 ha)
+     TIPO 2 (Brezal): 1,032 px (41 ha)
+     TIPO 3 (Hayedo): 52,837 px (2113 ha)
+     TIPO 4 (Encinar): 8,415 px (337 ha)
+   Bordas: .\dist_borda_aralar.tif
+   DEM 5m: .\MDT05_aralar.tif
+   Pendiente rango: [0.0, 76.2] grados
+
+   Pixeles PASTO validos: 73,174 (2927 ha)
+
+3. Biomasa forrajera 2022 (solo pastos)...
+  -> mapas\2022_LIFE\aralar_pastos_mapa_biomasa_2022.png
+4. Calidad pastoral 2022 (solo pastos)...
+  -> mapas\2022_LIFE\aralar_pastos_mapa_calidad_2022.png
+5. Capacidad de acogida 2022 (solo pastos, turnover=3.0)...
+  -> mapas\2022_LIFE\aralar_pastos_mapa_carga_2022.png
+6. Balance forrajero 2022 (demanda=0.7 UGM/ha)...
+  -> mapas\2022_LIFE\aralar_pastos_mapa_balance_2022.png
+7. Diagnostico de riesgo 2022 (pendiente DEM 5m)...
+  -> mapas\2022_LIFE\aralar_pastos_mapa_riesgo_2022.png
+8. Mapa de pendientes 2022 (DEM 5m)...
+  -> mapas\2022_LIFE\aralar_pastos_mapa_pendiente_2022.png
+
+9. IPP espacializado 2022 (todos los habitats)...
+  -> mapas\2022_LIFE\aralar_mapa_IPP_espacializado_2022.png
+  -> mapas\2022_LIFE\aralar_mapa_IPP_C_pastos_2022.png
+
+  Cargando CSV zonal: .\diagnostico_pastoral.csv
+  CSV zonal cargado: 6 zonas para el año 2022
+
+9b. IPP Estrategia A 2022 (correccion climatica GAM G6)...
+  -> mapas\2022_LIFE\aralar_mapa_IPP_A_todos_2022.png
+  -> mapas\2022_LIFE\aralar_mapa_IPP_A_pastos_2022.png
+
+9c. IPP Estrategia B 2022 (espacializado por zona desde CSV R)...
+  -> mapas\2022_LIFE\aralar_mapa_IPP_B_pastos_2022.png
+
+9d. IPP Estrategia D 2022 (espacializado por zona desde CSV R)...
+  -> mapas\2022_LIFE\aralar_mapa_IPP_D_todos_2022.png
+  -> mapas\2022_LIFE\aralar_mapa_IPP_D_pastos_2022.png
+
+9e. IPP consenso + concordancia (4 estrategias: A+B+C+D)...
+  -> mapas\2022_LIFE\aralar_mapa_IPP_consenso_pastos_2022.png
+  -> mapas\2022_LIFE\aralar_mapa_IPP_concordancia_pastos_2022.png
+
+  Comparativa entre estrategias por anillo (solo pastos):
+  Anillo                     IPP_A  IPP_B  IPP_C  IPP_D  Consen.
+  Cercano <500m              -0.126  -0.148  +0.105  -0.005  -0.044
+  Intermedio 500-1500m       -0.117  -0.132  +0.189  -0.003  -0.016
+  Remoto >1500m              +0.022  +0.000  +0.483  -0.000  +0.126
+
+  Distribucion de concordancia (% pixeles pasto, n=4 estrategias):
+    1/4 (sensible):  15.4%
+    2/4 (sensible):  10.0%
+    3/4 (parcial):  39.2%
+    4/4 (robusto):  35.4%
+
+10. Exportando GeoTIFFs 2022...
+  -> mapas\2022_LIFE\aralar_biomasa_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_capacidad_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_balance_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_C_espacializado_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_C_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_pendiente_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_A_todos_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_A_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_B_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_D_todos_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_D_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_consenso_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_calidad_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_riesgo_pastos_2022.tif
+  -> mapas\2022_LIFE\aralar_anillo_dist_2022.tif
+  -> mapas\2022_LIFE\aralar_IPP_concordancia_2022.tif
+
+=================================================================
+  RESUMEN — Pastos de Aralar 2022
+  Carga: 0.7 UGM/ha | Temporada: 180 d
+  Turnover: 3.0 | Aprovech.: 0.55
+=================================================================
+  Superficie pastoral:     2927 ha
+  Biomasa en pie media:    409 kg MS/ha
+  Produccion total media:  1228 kg MS/ha
+  Capacidad media:         0.31 UGM/ha
+  Balance medio:           -0.387 UGM/ha
+  Pendiente media:         20.7 grados
+
+  % pixeles deficit:       95.9%
+  % pixeles equilibrio:    1.7%
+  % pixeles excedente:     3.4%
+
+  IPP medio por anillo (solo pastos):
+    Cercano <500m            : IPP = +0.105  (n=37,253)
+    Intermedio 500-1500m     : IPP = +0.189  (n=33,247)
+    Remoto >1500m            : IPP = +0.483  (n=2,674)
+
+  IPP medio por tipo de habitat:
+    Pasto     : IPP = +0.157  (n=73,174)
+    Hayedo    : IPP = -0.022  (n=39,729)
+
+  Calidad pastoral:
+    Muy pobre   :   0.0%
+    Pobre       :  29.7%
+    Moderado    :  57.7%
+    Bueno       :  10.4%
+    Excelente   :   2.2%
+
+  Diagnostico de riesgo:
+    Matorralizacion     :   2.1%
+    Subpastoreo leve    :   1.1%
+    Equilibrio          :   1.6%
+    Presion elevada     :   2.2%
+    Degradacion         :  66.5%
+    Erosion             :  26.4%
+
+  Ficheros en: mapas\2022_LIFE/
+  Resumen completo en: mapas\2022_LIFE\aralar_resumen_2022.txt
+=================================================================
+
