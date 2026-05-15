@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TFG Aralar Â· DiagnÃ³stico pastoral por teledetecciÃ³n</title>
-  <meta name="description" content="Trabajo de Fin de Grado sobre el diagnÃ³stico pastoral del Parque Natural de Aralar mediante teledetecciÃ³n Sentinel-2, modelizaciÃ³n climÃ¡tica con GAM y triangulaciÃ³n cuÃ¡druple del IPP. UPV/EHU 2026.">
+  <title>TFG Aralar · Diagnóstico pastoral por teledetección</title>
+  <meta name="description" content="Trabajo de Fin de Grado sobre el diagnóstico pastoral del Parque Natural de Aralar mediante teledetección Sentinel-2, modelización climática con GAM y triangulación cuádruple del IPP. UPV/EHU 2026.">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,14 +13,14 @@
   <div class="container">
     <div class="brand">
       <h1>TFG Aralar</h1>
-      <p class="subtitle">DiagnÃ³stico pastoral del Parque Natural de Aralar mediante teledetecciÃ³n y modelizaciÃ³n climÃ¡tica</p>
-      <p class="meta">Grado en GeografÃ­a y OrdenaciÃ³n del Territorio Â· UPV/EHU Â· 2026 Â· LIFE Oreka Mendian</p>
+      <p class="subtitle">Diagnóstico pastoral del Parque Natural de Aralar mediante teledetección y modelización climática</p>
+      <p class="meta">Grado en Geografía y Ordenación del Territorio · UPV/EHU · 2026 · LIFE Oreka Mendian</p>
     </div>
     <nav>
       <a href="#resumen">Resumen</a>
-      <a href="#metodo">MetodologÃ­a</a>
+      <a href="#metodo">Metodología</a>
       <a href="#mapas">Mapas</a>
-      <a href="#graficos">GrÃ¡ficos</a>
+      <a href="#graficos">Gráficos</a>
       <a href="#documentos">Documentos</a>
       <a href="#repositorio">Repositorio</a>
     </nav>
@@ -34,11 +34,11 @@
     <h2>El proyecto en una mirada</h2>
     <div class="hero-grid">
       <div class="hero-text">
-        <p class="lead">Â¿CuÃ¡nto del LAI deficiente del pasto subalpino atlÃ¡ntico de Aralar es atribuible al pastoreo y cuÃ¡nto al clima? Este TFG construye un sistema de diagnÃ³stico pastoral usando series Sentinel-2 invertidas con PROSAIL, modelizaciÃ³n climÃ¡tica con GAM y <strong>cuatro estrategias del IPP</strong> que se trianguian para producir un diagnÃ³stico robusto.</p>
-        <p>Aplicado al ZEC ES2120011 Parque Natural de Aralar entre 2018 y 2025, el sistema revela un <strong>patrÃ³n cuasi-bianual</strong> de presiÃ³n pastoral: crisis en 2020, 2022 y 2025, alternadas con relajaciÃ³n en 2023.</p>
+        <p class="lead">¿Cuánto del LAI deficiente del pasto subalpino atlántico de Aralar es atribuible al pastoreo y cuánto al clima? Este TFG construye un sistema de diagnóstico pastoral usando series Sentinel-2 invertidas con PROSAIL, modelización climática con GAM y <strong>cuatro estrategias del IPP</strong> que se trianguian para producir un diagnóstico robusto.</p>
+        <p>Aplicado al ZEC ES2120011 Parque Natural de Aralar entre 2018 y 2025, el sistema revela un <strong>patrón cuasi-bianual</strong> de presión pastoral: crisis en 2020, 2022 y 2025, alternadas con relajación en 2023.</p>
       </div>
       <div class="stats">
-        <div class="stat"><div class="stat-num">8</div><div class="stat-label">aÃ±os de serie temporal</div></div>
+        <div class="stat"><div class="stat-num">8</div><div class="stat-label">años de serie temporal</div></div>
         <div class="stat"><div class="stat-num">4</div><div class="stat-label">estrategias del IPP</div></div>
         <div class="stat"><div class="stat-num">0.91</div><div class="stat-label">r medio LOYO</div></div>
         <div class="stat"><div class="stat-num">96</div><div class="stat-label">mapas generados</div></div>
@@ -49,52 +49,52 @@
 
 <section id="metodo">
   <div class="container">
-    <h2>MetodologÃ­a por triangulaciÃ³n</h2>
-    <p class="intro">El diagnÃ³stico se construye combinando cuatro estrategias metodolÃ³gicamente independientes. Cada una responde a la misma pregunta desde un Ã¡ngulo distinto, y la convergencia de signo entre ellas es el criterio operativo de robustez.</p>
+    <h2>Metodología por triangulación</h2>
+    <p class="intro">El diagnóstico se construye combinando cuatro estrategias metodológicamente independientes. Cada una responde a la misma pregunta desde un ángulo distinto, y la convergencia de signo entre ellas es el criterio operativo de robustez.</p>
     <div class="strategies">
       <div class="strategy strategy-A">
-        <h3>A Â· GAM climÃ¡tico</h3>
-        <p>Modelo G6 ajustado sobre el LAI agregado del AOI. El residuo (observado âˆ’ predicho) es la seÃ±al pastoral.</p>
-        <div class="formula">IPP_A = (LAI_obs âˆ’ LAI_G6) / LAI_obs</div>
+        <h3>A · GAM climático</h3>
+        <p>Modelo G6 ajustado sobre el LAI agregado del AOI. El residuo (observado − predicho) es la señal pastoral.</p>
+        <div class="formula">IPP_A = (LAI_obs − LAI_G6) / LAI_obs</div>
       </div>
       <div class="strategy strategy-B">
-        <h3>B Â· Pseudo-referencia</h3>
-        <p>Modelo entrenado solo con zonas de pasto remoto (referencia interna menos pastoreada). AnomalÃ­a respecto a esa referencia.</p>
-        <div class="formula">IPP_B = anomalÃ­a vs ref. interna</div>
+        <h3>B · Pseudo-referencia</h3>
+        <p>Modelo entrenado solo con zonas de pasto remoto (referencia interna menos pastoreada). Anomalía respecto a esa referencia.</p>
+        <div class="formula">IPP_B = anomalía vs ref. interna</div>
       </div>
       <div class="strategy strategy-C">
-        <h3>C Â· AnomalÃ­a espacial</h3>
-        <p>ComparaciÃ³n con la mediana del AOI en cada fecha. No necesita modelo ni referencia, foto instantÃ¡nea.</p>
-        <div class="formula">IPP_C = (LAI âˆ’ mediana) / mediana</div>
+        <h3>C · Anomalía espacial</h3>
+        <p>Comparación con la mediana del AOI en cada fecha. No necesita modelo ni referencia, foto instantánea.</p>
+        <div class="formula">IPP_C = (LAI − mediana) / mediana</div>
       </div>
       <div class="strategy strategy-D">
-        <h3>D Â· Referencia hayedo</h3>
-        <p>El hayedo como termÃ³metro climÃ¡tico. Diferencia de anomalÃ­as respecto a las fenologÃ­as propias multianuales.</p>
-        <div class="formula">IPP_D = anom_pasto âˆ’ anom_hayedo</div>
+        <h3>D · Referencia hayedo</h3>
+        <p>El hayedo como termómetro climático. Diferencia de anomalías respecto a las fenologías propias multianuales.</p>
+        <div class="formula">IPP_D = anom_pasto − anom_hayedo</div>
       </div>
     </div>
     <div class="figure">
-      <img src="figures/IPP_triangulacion_ABCD.png" alt="TriangulaciÃ³n de las cuatro estrategias del IPP">
-      <p class="caption">TriangulaciÃ³n cuÃ¡druple del IPP: cada estrategia cubre la limitaciÃ³n de las demÃ¡s. La convergencia de signo es el criterio de robustez.</p>
+      <img src="figures/IPP_triangulacion_ABCD.png" alt="Triangulación de las cuatro estrategias del IPP">
+      <p class="caption">Triangulación cuádruple del IPP: cada estrategia cubre la limitación de las demás. La convergencia de signo es el criterio de robustez.</p>
     </div>
   </div>
 </section>
 
 <section id="mapas" class="alt">
   <div class="container">
-    <h2>GalerÃ­a de mapas pastorales</h2>
-    <p class="intro">13 productos cartogrÃ¡ficos por aÃ±o para la serie 2018-2025. Selecciona aÃ±o y producto para visualizar el mapa correspondiente.</p>
+    <h2>Galería de mapas pastorales</h2>
+    <p class="intro">13 productos cartográficos por año para la serie 2018-2025. Selecciona año y producto para visualizar el mapa correspondiente.</p>
 
     <div class="map-controls">
       <div class="control">
-        <label for="year-select">AÃ±o</label>
+        <label for="year-select">Año</label>
         <select id="year-select">
-          <option value="2018">2018 (transiciÃ³n)</option>
+          <option value="2018">2018 (transición)</option>
           <option value="2019">2019 (equilibrio)</option>
           <option value="2020" class="crisis">2020 (CRISIS FUERTE)</option>
-          <option value="2021">2021 (transiciÃ³n)</option>
+          <option value="2021">2021 (transición)</option>
           <option value="2022" selected class="crisis">2022 (CRISIS)</option>
-          <option value="2023" class="relax">2023 (RELAJACIÃ“N)</option>
+          <option value="2023" class="relax">2023 (RELAJACIÓN)</option>
           <option value="2024">2024 (mixto)</option>
           <option value="2025" class="crisis">2025 (CRISIS moderada)</option>
         </select>
@@ -103,17 +103,17 @@
         <label for="product-select">Producto</label>
         <select id="product-select">
           <option value="ipp_consenso" selected>IPP consenso integrado</option>
-          <option value="ipp_a">IPP A â€” GAM climÃ¡tico</option>
-          <option value="ipp_b">IPP B â€” Pseudo-referencia</option>
-          <option value="ipp_c">IPP C â€” AnomalÃ­a espacial</option>
-          <option value="ipp_d">IPP D â€” Referencia hayedo</option>
-          <option value="ipp_espacializado">IPP espacializado (pÃ­xel)</option>
+          <option value="ipp_a">IPP A — GAM climático</option>
+          <option value="ipp_b">IPP B — Pseudo-referencia</option>
+          <option value="ipp_c">IPP C — Anomalía espacial</option>
+          <option value="ipp_d">IPP D — Referencia hayedo</option>
+          <option value="ipp_espacializado">IPP espacializado (píxel)</option>
           <option value="concordancia">Mapa de concordancia (k/n)</option>
           <option value="biomasa">Biomasa estimada (kg/ha)</option>
           <option value="calidad">Calidad forrajera</option>
           <option value="carga">Carga admisible (UGM/ha)</option>
           <option value="balance">Balance forrajero</option>
-          <option value="riesgo">Riesgo de degradaciÃ³n</option>
+          <option value="riesgo">Riesgo de degradación</option>
           <option value="pendiente">Pendiente (control)</option>
         </select>
       </div>
@@ -121,17 +121,17 @@
 
     <div class="map-display">
       <img id="map-image" src="maps/2022/aralar_mapa_IPP_consenso_pastos_2022.png" alt="Mapa pastoral">
-      <p class="caption" id="map-caption">IPP consenso integrado â€” 2022 (aÃ±o de crisis pastoral severa, concordancia 4/4)</p>
+      <p class="caption" id="map-caption">IPP consenso integrado — 2022 (año de crisis pastoral severa, concordancia 4/4)</p>
     </div>
   </div>
 </section>
 
 <section id="graficos">
   <div class="container">
-    <h2>SÃ­ntesis grÃ¡fica de resultados</h2>
-    <p class="intro">GalerÃ­a completa generada automÃ¡ticamente a partir del contenido de la carpeta <code>figures/</code> del repositorio. Cada nueva figura que se aÃ±ada aparece aquÃ­ sin tocar la pÃ¡gina.</p>
+    <h2>Síntesis gráfica de resultados</h2>
+    <p class="intro">Galería completa generada automáticamente a partir del contenido de la carpeta <code>figures/</code> del repositorio. Cada nueva figura que se añada aparece aquí sin tocar la página.</p>
     <div class="chart-grid" id="charts-grid">
-      <p class="docs-status" id="charts-status">Cargando figurasâ€¦</p>
+      <p class="docs-status" id="charts-status">Cargando figuras…</p>
     </div>
   </div>
 </section>
@@ -139,9 +139,9 @@
 <section id="documentos" class="alt">
   <div class="container">
     <h2>Documentos del proyecto</h2>
-    <p class="intro">Listado generado automÃ¡ticamente a partir del contenido de la carpeta <code>docs/</code> del repositorio. Cada vez que se aÃ±ada un nuevo archivo aparecerÃ¡ aquÃ­ sin tocar la pÃ¡gina.</p>
+    <p class="intro">Listado generado automáticamente a partir del contenido de la carpeta <code>docs/</code> del repositorio. Cada vez que se añada un nuevo archivo aparecerá aquí sin tocar la página.</p>
     <div class="docs-grid" id="docs-grid">
-      <p class="docs-status" id="docs-status">Cargando documentosâ€¦</p>
+      <p class="docs-status" id="docs-status">Cargando documentos…</p>
     </div>
   </div>
 </section>
@@ -149,29 +149,29 @@
 <section id="repositorio">
   <div class="container">
     <h2>Repositorio y reproducibilidad</h2>
-    <p class="intro">Todo el cÃ³digo fuente del pipeline estÃ¡ disponible en GitHub bajo licencia Creative Commons BY-NC-ND 4.0. Esto permite la consulta, citaciÃ³n y reproducciÃ³n del trabajo, pero no su uso comercial ni la distribuciÃ³n de derivados modificados.</p>
+    <p class="intro">Todo el código fuente del pipeline está disponible en GitHub bajo licencia Creative Commons BY-NC-ND 4.0. Esto permite la consulta, citación y reproducción del trabajo, pero no su uso comercial ni la distribución de derivados modificados.</p>
 
     <div class="repo-card">
-      <h3>ðŸ“¦ github.com/Igoitz13/GRAL_ARALAR</h3>
+      <h3>📦 github.com/Moxkix/ARALAR_TFG</h3>
       <ul class="repo-list">
-        <li><code>scripts/python/</code> â€” InversiÃ³n PROSAIL local + entrenamiento NN + cartografÃ­a</li>
-        <li><code>scripts/javascript/</code> â€” Pipeline GEE completo</li>
-        <li><code>scripts/R/</code> â€” ModelizaciÃ³n climÃ¡tica y diagnÃ³stico cuÃ¡druple</li>
-        <li><code>data/</code> â€” CSVs de salida del pipeline</li>
-        <li><code>maps/</code> â€” CartografÃ­a pastoral por aÃ±o (serie 2018-2025, 13 productos Ã— 8 aÃ±os)</li>
-        <li><code>figures/</code> â€” Figuras de sÃ­ntesis del diagnÃ³stico</li>
-        <li><code>docs/</code> â€” DocumentaciÃ³n del proyecto (listada automÃ¡ticamente en la web)</li>
+        <li><code>scripts/python/</code> — Inversión PROSAIL local + entrenamiento NN + cartografía</li>
+        <li><code>scripts/javascript/</code> — Pipeline GEE completo</li>
+        <li><code>scripts/R/</code> — Modelización climática y diagnóstico cuádruple</li>
+        <li><code>data/</code> — CSVs de salida del pipeline</li>
+        <li><code>maps/</code> — Cartografía pastoral por año (serie 2018-2025, 13 productos × 8 años)</li>
+        <li><code>figures/</code> — Figuras de síntesis del diagnóstico</li>
+        <li><code>docs/</code> — Documentación del proyecto (listada automáticamente en la web)</li>
       </ul>
-      <a href="https://github.com/Igoitz13/GRAL_ARALAR" class="btn">Ver cÃ³digo fuente completo â†’</a>
+      <a href="https://github.com/Moxkix/ARALAR_TFG" class="btn">Ver código fuente completo →</a>
     </div>
 
     <div class="cite-box">
-      <h3>CitaciÃ³n sugerida</h3>
-      <pre>[Apellido, Nombre] (2026). DiagnÃ³stico pastoral del Parque Natural
-de Aralar mediante teledetecciÃ³n y modelizaciÃ³n climÃ¡tica. Trabajo
-de Fin de Grado, Grado en GeografÃ­a y OrdenaciÃ³n del Territorio,
-Universidad del PaÃ­s Vasco / Euskal Herriko Unibertsitatea.
-https://github.com/Igoitz13/GRAL_ARALAR</pre>
+      <h3>Citación sugerida</h3>
+      <pre>[Apellido, Nombre] (2026). Diagnóstico pastoral del Parque Natural
+de Aralar mediante teledetección y modelización climática. Trabajo
+de Fin de Grado, Grado en Geografía y Ordenación del Territorio,
+Universidad del País Vasco / Euskal Herriko Unibertsitatea.
+https://github.com/Moxkix/ARALAR_TFG</pre>
     </div>
   </div>
 </section>
@@ -183,26 +183,26 @@ https://github.com/Igoitz13/GRAL_ARALAR</pre>
     <div class="footer-grid">
       <div>
         <h4>Sobre el proyecto</h4>
-        <p>Trabajo de Fin de Grado en GeografÃ­a y OrdenaciÃ³n del Territorio (UPV/EHU). Desarrollado en el marco del proyecto LIFE Oreka Mendian (LIFE15 NAT/ES/000762).</p>
+        <p>Trabajo de Fin de Grado en Geografía y Ordenación del Territorio (UPV/EHU). Desarrollado en el marco del proyecto LIFE Oreka Mendian (LIFE15 NAT/ES/000762).</p>
       </div>
       <div>
         <h4>Agradecimientos</h4>
         <ul class="footer-list">
-          <li>HAZI Fundazioa â€” coordinaciÃ³n LIFE</li>
-          <li>DiputaciÃ³n Foral de GuipÃºzcoa â€” cartografÃ­a HIC</li>
-          <li>Gobierno de Navarra â€” datos meteorolÃ³gicos</li>
-          <li>GeoEuskadi â€” MDT5</li>
-          <li>ESA / Copernicus â€” Sentinel-2, ERA5-Land</li>
+          <li>HAZI Fundazioa — coordinación LIFE</li>
+          <li>Diputación Foral de Guipúzcoa — cartografía HIC</li>
+          <li>Gobierno de Navarra — datos meteorológicos</li>
+          <li>GeoEuskadi — MDT5</li>
+          <li>ESA / Copernicus — Sentinel-2, ERA5-Land</li>
           <li>Google Earth Engine</li>
         </ul>
       </div>
       <div>
         <h4>Licencia</h4>
-        <p>Este trabajo y todo su contenido se publican bajo licencia <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es">Creative Commons AtribuciÃ³n-NoComercial-SinDerivadas 4.0 Internacional</a>.</p>
+        <p>Este trabajo y todo su contenido se publican bajo licencia <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.es">Creative Commons Atribución-NoComercial-SinDerivadas 4.0 Internacional</a>.</p>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 TFG Aralar Â· UPV/EHU Â· Web realizada con HTML/CSS estÃ¡tico sobre GitHub Pages</p>
+      <p>&copy; 2026 TFG Aralar · UPV/EHU · Web realizada con HTML/CSS estático sobre GitHub Pages</p>
     </div>
   </div>
 </footer>
@@ -215,29 +215,29 @@ const mapCaption = document.getElementById('map-caption');
 
 const productLabels = {
   ipp_consenso: 'IPP consenso integrado',
-  ipp_a: 'IPP A â€” GAM climÃ¡tico',
-  ipp_b: 'IPP B â€” Pseudo-referencia',
-  ipp_c: 'IPP C â€” AnomalÃ­a espacial',
-  ipp_d: 'IPP D â€” Referencia hayedo',
-  ipp_espacializado: 'IPP espacializado (pÃ­xel)',
-  concordancia: 'Mapa de concordancia pÃ­xel a pÃ­xel',
+  ipp_a: 'IPP A — GAM climático',
+  ipp_b: 'IPP B — Pseudo-referencia',
+  ipp_c: 'IPP C — Anomalía espacial',
+  ipp_d: 'IPP D — Referencia hayedo',
+  ipp_espacializado: 'IPP espacializado (píxel)',
+  concordancia: 'Mapa de concordancia píxel a píxel',
   biomasa: 'Biomasa estimada (kg/ha)',
   calidad: 'Calidad forrajera',
   carga: 'Carga admisible (UGM/ha)',
   balance: 'Balance forrajero',
-  riesgo: 'Riesgo de degradaciÃ³n',
+  riesgo: 'Riesgo de degradación',
   pendiente: 'Pendiente (variable de control)'
 };
 
 const yearTags = {
-  2018: 'transiciÃ³n',
+  2018: 'transición',
   2019: 'equilibrio',
-  2020: 'aÃ±o de crisis pastoral severa, concordancia 4/4',
-  2021: 'transiciÃ³n leve hacia presiÃ³n',
-  2022: 'aÃ±o de crisis pastoral severa, concordancia 4/4',
-  2023: 'aÃ±o de relajaciÃ³n pastoral generalizada, concordancia 4/4',
-  2024: 'patrÃ³n mixto, concordancia 3/4 por fiabilidad observacional',
-  2025: 'aÃ±o de crisis moderada, concordancia 4/4'
+  2020: 'año de crisis pastoral severa, concordancia 4/4',
+  2021: 'transición leve hacia presión',
+  2022: 'año de crisis pastoral severa, concordancia 4/4',
+  2023: 'año de relajación pastoral generalizada, concordancia 4/4',
+  2024: 'patrón mixto, concordancia 3/4 por fiabilidad observacional',
+  2025: 'año de crisis moderada, concordancia 4/4'
 };
 
 const productFiles = {
@@ -261,8 +261,8 @@ function updateMap() {
   const product = productSelect.value;
   const filename = `maps/${year}/${productFiles[product](year)}`;
   mapImage.src = filename;
-  mapImage.alt = `${productLabels[product]} â€” ${year}`;
-  mapCaption.textContent = `${productLabels[product]} â€” ${year} (${yearTags[year]})`;
+  mapImage.alt = `${productLabels[product]} — ${year}`;
+  mapCaption.textContent = `${productLabels[product]} — ${year} (${yearTags[year]})`;
 }
 
 yearSelect.addEventListener('change', updateMap);
@@ -276,22 +276,22 @@ document.querySelectorAll('nav a').forEach(link => {
   });
 });
 
-const DOCS_REPO = 'Igoitz13/GRAL_ARALAR';
+const DOCS_REPO = 'Moxkix/ARALAR_TFG';
 const DOCS_BRANCH = 'main';
 const DOCS_PATH = 'docs';
 
 const docIcons = {
-  pdf: 'ðŸ“Š',
-  doc: 'ðŸ“„', docx: 'ðŸ“„',
-  xls: 'ðŸ“ˆ', xlsx: 'ðŸ“ˆ', csv: 'ðŸ“ˆ',
-  ppt: 'ðŸ“½ï¸', pptx: 'ðŸ“½ï¸',
-  txt: 'ðŸ“', md: 'ðŸ“',
-  zip: 'ðŸ—‚ï¸', rar: 'ðŸ—‚ï¸', '7z': 'ðŸ—‚ï¸',
-  png: 'ðŸ–¼ï¸', jpg: 'ðŸ–¼ï¸', jpeg: 'ðŸ–¼ï¸', gif: 'ðŸ–¼ï¸', svg: 'ðŸ–¼ï¸'
+  pdf: '📊',
+  doc: '📄', docx: '📄',
+  xls: '📈', xlsx: '📈', csv: '📈',
+  ppt: '📽️', pptx: '📽️',
+  txt: '📝', md: '📝',
+  zip: '🗂️', rar: '🗂️', '7z': '🗂️',
+  png: '🖼️', jpg: '🖼️', jpeg: '🖼️', gif: '🖼️', svg: '🖼️'
 };
 
 function iconFor(ext) {
-  return docIcons[ext.toLowerCase()] || 'ðŸ“Ž';
+  return docIcons[ext.toLowerCase()] || '📎';
 }
 
 function humanSize(bytes) {
@@ -322,7 +322,7 @@ async function loadDocs() {
     const url = `https://api.github.com/repos/${DOCS_REPO}/contents/${DOCS_PATH}?ref=${DOCS_BRANCH}`;
     const res = await fetch(url, { headers: { 'Accept': 'application/vnd.github+json' } });
     if (res.status === 404) {
-      status.textContent = 'AÃºn no se han publicado documentos. Cuando se suban archivos a la carpeta docs/ del repositorio aparecerÃ¡n aquÃ­ automÃ¡ticamente.';
+      status.textContent = 'Aún no se han publicado documentos. Cuando se suban archivos a la carpeta docs/ del repositorio aparecerán aquí automáticamente.';
       return;
     }
     if (!res.ok) throw new Error(`GitHub API ${res.status}`);
@@ -331,7 +331,7 @@ async function loadDocs() {
       .filter(it => it.type === 'file')
       .sort((a, b) => a.name.localeCompare(b.name, 'es'));
     if (files.length === 0) {
-      status.textContent = 'La carpeta docs/ estÃ¡ vacÃ­a. Sube archivos al repositorio para que aparezcan aquÃ­.';
+      status.textContent = 'La carpeta docs/ está vacía. Sube archivos al repositorio para que aparezcan aquí.';
       return;
     }
     grid.innerHTML = '';
@@ -346,7 +346,7 @@ async function loadDocs() {
         <div class="doc-icon">${iconFor(ext)}</div>
         <h3>${prettyName(f.name)}</h3>
         <p>${f.name}</p>
-        <span class="doc-format">${ext.toUpperCase() || 'archivo'}${f.size ? ' Â· ' + humanSize(f.size) : ''}</span>
+        <span class="doc-format">${ext.toUpperCase() || 'archivo'}${f.size ? ' · ' + humanSize(f.size) : ''}</span>
       `;
       grid.appendChild(a);
     }
@@ -362,52 +362,52 @@ const FIGURES_EXCLUDE = new Set(['IPP_triangulacion_ABCD.png']);
 
 const figureMeta = {
   'evolucion_IPP_interanual.png': {
-    title: 'EvoluciÃ³n interanual del IPP',
-    desc: 'Serie 2018-2025 del IPP consenso. PatrÃ³n cuasi-bianual: crisis en 2020, 2022 y 2025 alternadas con la relajaciÃ³n de 2023.'
+    title: 'Evolución interanual del IPP',
+    desc: 'Serie 2018-2025 del IPP consenso. Patrón cuasi-bianual: crisis en 2020, 2022 y 2025 alternadas con la relajación de 2023.'
   },
   'IPP_barras_interanual.png': {
-    title: 'IPP por aÃ±o (sÃ­ntesis en barras)',
-    desc: 'Resumen anual del IPP por estrategia. Permite comparar la magnitud de la presiÃ³n pastoral entre aÃ±os y la coherencia entre las cuatro estrategias.'
+    title: 'IPP por año (síntesis en barras)',
+    desc: 'Resumen anual del IPP por estrategia. Permite comparar la magnitud de la presión pastoral entre años y la coherencia entre las cuatro estrategias.'
   },
   'IPP_por_habitat.png': {
-    title: 'IPP por hÃ¡bitat',
-    desc: 'DistribuciÃ³n del IPP por tipo de hÃ¡bitat (HIC). Identifica quÃ© tipos de pasto soportan mÃ¡s presiÃ³n.'
+    title: 'IPP por hábitat',
+    desc: 'Distribución del IPP por tipo de hábitat (HIC). Identifica qué tipos de pasto soportan más presión.'
   },
   'gradiente_IPP_distancia_bordas.png': {
     title: 'Gradiente espacial por distancia a las bordas',
-    desc: 'Pasto cercano > intermedio > remoto. Firma espacial coherente con la huella ganadera, independiente del modelo climÃ¡tico.'
+    desc: 'Pasto cercano > intermedio > remoto. Firma espacial coherente con la huella ganadera, independiente del modelo climático.'
   },
   'diag_A_pasto_cercano.png': {
-    title: 'Estrategia A Â· pasto cercano',
-    desc: 'AnomalÃ­as del LAI del pasto cercano a las bordas respecto al modelo climÃ¡tico G6.'
+    title: 'Estrategia A · pasto cercano',
+    desc: 'Anomalías del LAI del pasto cercano a las bordas respecto al modelo climático G6.'
   },
   'diag_A_pasto_intermedio.png': {
-    title: 'Estrategia A Â· pasto intermedio',
-    desc: 'AnomalÃ­as del LAI del pasto en zona intermedia respecto al modelo climÃ¡tico G6.'
+    title: 'Estrategia A · pasto intermedio',
+    desc: 'Anomalías del LAI del pasto en zona intermedia respecto al modelo climático G6.'
   },
   'diag_A_pasto_remoto.png': {
-    title: 'Estrategia A Â· pasto remoto',
-    desc: 'Pasto remoto: pseudo-referencia interna usada tambiÃ©n en la Estrategia B.'
+    title: 'Estrategia A · pasto remoto',
+    desc: 'Pasto remoto: pseudo-referencia interna usada también en la Estrategia B.'
   },
   'diag_A_hayedo_cercano.png': {
-    title: 'Estrategia A Â· hayedo cercano',
-    desc: 'AnomalÃ­as del LAI del hayedo en zona cercana respecto al modelo climÃ¡tico.'
+    title: 'Estrategia A · hayedo cercano',
+    desc: 'Anomalías del LAI del hayedo en zona cercana respecto al modelo climático.'
   },
   'diag_A_hayedo_intermedio.png': {
-    title: 'Estrategia A Â· hayedo intermedio',
-    desc: 'AnomalÃ­as del LAI del hayedo en zona intermedia respecto al modelo climÃ¡tico.'
+    title: 'Estrategia A · hayedo intermedio',
+    desc: 'Anomalías del LAI del hayedo en zona intermedia respecto al modelo climático.'
   },
   'diag_A_hayedo_remoto.png': {
-    title: 'Estrategia A Â· hayedo remoto',
-    desc: 'Hayedo remoto: termÃ³metro climÃ¡tico que vertebra la Estrategia D.'
+    title: 'Estrategia A · hayedo remoto',
+    desc: 'Hayedo remoto: termómetro climático que vertebra la Estrategia D.'
   },
   'diag_C_anomalias.png': {
-    title: 'Estrategia C Â· anomalÃ­a espacial',
-    desc: 'ComparaciÃ³n pÃ­xel a pÃ­xel con la mediana del AOI en cada fecha. No requiere modelo ni referencia externa.'
+    title: 'Estrategia C · anomalía espacial',
+    desc: 'Comparación píxel a píxel con la mediana del AOI en cada fecha. No requiere modelo ni referencia externa.'
   },
   'diagnostico_integrado_global.png': {
-    title: 'DiagnÃ³stico integrado global',
-    desc: 'SÃ­ntesis final del diagnÃ³stico cuÃ¡druple: convergencia entre estrategias, signo del IPP por aÃ±o y nivel de fiabilidad.'
+    title: 'Diagnóstico integrado global',
+    desc: 'Síntesis final del diagnóstico cuádruple: convergencia entre estrategias, signo del IPP por año y nivel de fiabilidad.'
   }
 };
 
@@ -457,7 +457,7 @@ async function loadCharts() {
     });
 
     if (images.length === 0) {
-      status.textContent = 'AÃºn no se han publicado figuras en la carpeta figures/.';
+      status.textContent = 'Aún no se han publicado figuras en la carpeta figures/.';
       return;
     }
     grid.innerHTML = '';
